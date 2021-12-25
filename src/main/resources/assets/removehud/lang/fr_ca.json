@@ -1,0 +1,6 @@
+{
+  "text.autoconfig.removehud.title": "Remove Hud but not Hand Paramètres",
+  "text.autoconfig.removehud.option.highlightBlocks": "Activer les contours de blocs",
+  "text.autoconfig.removehud.option.toggleMod": "Retirer le HUD",
+  "text.autoconfig.removehud.option.removeHand": "Retirer la Main"
+}
