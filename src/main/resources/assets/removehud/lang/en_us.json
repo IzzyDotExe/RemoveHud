@@ -2,5 +2,8 @@
   "text.autoconfig.removehud.title": "Remove Hud but not Hand Config",
   "text.autoconfig.removehud.option.highlightBlocks": "Enable Block outlines",
   "text.autoconfig.removehud.option.toggleMod": "Remove Hud",
-  "text.autoconfig.removehud.option.removeHand": "Remove Hand"
+  "text.autoconfig.removehud.option.removeHand": "Remove Hand",
+  "key.category.removehud": "Remove Hud but not Hand",
+  "key.removehud.open_settings": "Open Mod Settings",
+  "key.removehud.toggle_mod": "Toggle HUD" 
 }
