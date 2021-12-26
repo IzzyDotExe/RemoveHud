@@ -1,4 +1,4 @@
-# Remove Hud But Not Hand
+# Remove Hud But Not Hand  [![HitCount](http://hits.dwyl.com/IsraelAristide/RemoveHudButNotHand-fabricmc.svg?style=flat)](http://hits.dwyl.com/IsraelAristide/RemoveHudButNotHand-fabricmc) [![1.18.1](https://github.com/IsraelAristide/RemoveHudButNotHand-fabricmc/actions/workflows/build.yml/badge.svg?branch=1.18.1)](https://github.com/IsraelAristide/RemoveHudButNotHand-fabricmc/actions/workflows/build.yml) ![Downloads](https://img.shields.io/github/downloads/IsraelAristide/RemoveHudButNotHand-fabricmc/total) ![Commits](https://img.shields.io/github/commit-activity/m/IsraelAristide/RemoveHudButNotHand-fabricmc)
 <p><strong>Have you ever wanted a more immersive experience in minecraft? This mod has you covered!</strong></p>
 
 <p align="center">
