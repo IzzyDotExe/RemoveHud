@@ -12,6 +12,7 @@
 - Easy toggle button that is rebindable (Default F7)
 - Removes Hand without removing the HUD (Availible in Options menu F8)
 - Removes the block outline (Availible in Options menu F8)
+- Individually toggle certain elements of the HUD (Via options menu F8)
 
 ## Dependencies
 You need these mods in order for this one to work
