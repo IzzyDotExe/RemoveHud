@@ -15,7 +15,6 @@ public abstract class RemoveHandButNotHud {
         if (ModConfig.INSTANCE.removeHand) {
             info.cancel();
         }
-
     }
 
 }
