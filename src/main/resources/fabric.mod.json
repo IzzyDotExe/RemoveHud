@@ -32,12 +32,12 @@
 
   "depends": {
     "fabric-key-binding-api-v1": "*",
-    "fabricloader": ">=0.11.3",
+    "fabricloader": ">=0.14.10",
     "fabric": "*",
-    "minecraft": "1.18.x",
+    "minecraft": "1.19.2",
     "java": ">=17",
-    "modmenu": ">=3.0.1",
-    "cloth-config": ">=6.1.48"
+    "modmenu": ">=4.0.6",
+    "cloth-config": ">=8.2.88"
 
   },
   "suggests": {

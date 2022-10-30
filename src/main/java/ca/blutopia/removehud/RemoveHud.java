@@ -29,8 +29,6 @@ public class RemoveHud implements ClientModInitializer {
 
 		ModConfig.init();
 
-		LOGGER.info("Hello Fabric world!");
-
 		keynmap = new KeyBinding("key.removehud.toggle_mod", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F7,"key.category.removehud");
 		keynmap2 = new KeyBinding("key.removehud.open_settings", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F8, "key.category.removehud");
 
