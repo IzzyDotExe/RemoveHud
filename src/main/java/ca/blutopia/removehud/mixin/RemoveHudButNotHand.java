@@ -4,6 +4,7 @@ import ca.blutopia.removehud.ModConfig;
 import net.minecraft.client.gui.hud.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.JumpingMount;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.ScoreboardObjective;
 import net.minecraft.util.Identifier;
@@ -34,7 +35,7 @@ public abstract class RemoveHudButNotHand {
 
     @Shadow protected abstract void renderStatusBars(MatrixStack matrices);
 
-    @Shadow public abstract void renderMountJumpBar(MatrixStack matrices, int x);
+    @Shadow public abstract void renderMountJumpBar(JumpingMount mount, MatrixStack matrices, int x);
 
     @Shadow protected abstract void renderMountHealth(MatrixStack matrices);
 
@@ -108,10 +109,11 @@ public abstract class RemoveHudButNotHand {
             renderMountHealth(matrices);
         }
     }
-    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderMountJumpBar(Lnet/minecraft/client/util/math/MatrixStack;I)V"))
-    public void renderMountJumpMix(InGameHud instance, MatrixStack matrices, int x) {
+
+    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderMountJumpBar(Lnet/minecraft/entity/JumpingMount;Lnet/minecraft/client/util/math/MatrixStack;I)V"))
+    public void renderMountJumpMix(InGameHud instance, JumpingMount mount, MatrixStack matrices, int x) {
         if (ModConfig.INSTANCE.MountJumpbar) {
-            renderMountJumpBar(matrices, x);
+            renderMountJumpBar(mount, matrices, x);
         }
     }
 
@@ -164,10 +166,10 @@ public abstract class RemoveHudButNotHand {
         }
     }
 
-    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/ChatHud;render(Lnet/minecraft/client/util/math/MatrixStack;I)V"))
-    public void renderChatHud(ChatHud instance, MatrixStack matrices, int tickDelta) {
+    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/ChatHud;render(Lnet/minecraft/client/util/math/MatrixStack;III)V"))
+    public void renderChatHud(ChatHud instance, MatrixStack matrices, int currentTick, int mouseX, int mouseY) {
         if (ModConfig.INSTANCE.ChatHud) {
-            instance.render(matrices, tickDelta);
+            instance.render(matrices, currentTick, mouseX, mouseY);
         }
     }
 
