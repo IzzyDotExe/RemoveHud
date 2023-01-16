@@ -1,5 +1,6 @@
 package ca.blutopia.removehud;
 
+import ca.blutopia.removehud.config.OriginPoint;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigData;
@@ -65,8 +66,68 @@ public class ModConfig implements ConfigData {
     public boolean BossBar = true;
 
     @ConfigEntry.Category("HUD")
-    @Comment("Health, Hunger, and Armor")
-    public boolean StatusBars = true;
+    @Comment("Health hearts")
+    public boolean HpBar = true;
+//
+//    @ConfigEntry.Category("OFFSETS")
+//    @Comment("HP bar origin point")
+//    public OriginPoint HpBarOrigin = OriginPoint.ORIGIN;
+
+    @ConfigEntry.Category("OFFSETS")
+    @Comment("HP bar X offset")
+    public int HpXOffset = 0;
+
+    @ConfigEntry.Category("OFFSETS")
+    @Comment("HP bar Y offset")
+    public int HpYOffset = 0;
+//
+//    @ConfigEntry.Category("OFFSETS")
+//    @Comment("Armor bar origin point")
+//    public OriginPoint ArmorBarOrigin = OriginPoint.ORIGIN;
+
+    @ConfigEntry.Category("HUD")
+    @Comment("Armor points")
+    public boolean ArmorBar = true;
+
+    @ConfigEntry.Category("OFFSETS")
+    @Comment("Armor bar X offset")
+    public int ArmorXOffset = 0;
+
+    @ConfigEntry.Category("OFFSETS")
+    @Comment("Armor bar Y offset")
+    public int ArmorYOffset = 0;
+
+//    @ConfigEntry.Category("OFFSETS")
+//    @Comment("Oxygen bar origin point")
+//    public OriginPoint AirBarOrigin = OriginPoint.ORIGIN;
+
+    @ConfigEntry.Category("HUD")
+    @Comment("Oxygen bar")
+    public boolean AirBar = true;
+
+    @ConfigEntry.Category("OFFSETS")
+    @Comment("Air bar X offset")
+    public int AirXOffset = 0;
+
+    @ConfigEntry.Category("OFFSETS")
+    @Comment("Air bar Y offset")
+    public int AirYOffset = 0;
+
+//    @ConfigEntry.Category("OFFSETS")
+//    @Comment("Hunger bar origin point")
+//    public OriginPoint FoodBarOrigin = OriginPoint.ORIGIN;
+
+    @ConfigEntry.Category("HUD")
+    @Comment("Hunger bar")
+    public boolean HungerBar;
+
+    @ConfigEntry.Category("OFFSETS")
+    @Comment("Hunger bar X offset")
+    public int FoodXOffset = 0;
+
+    @ConfigEntry.Category("OFFSETS")
+    @Comment("Hunger bar Y offset")
+    public int FoodYOffset = 0;
 
     @ConfigEntry.Category("Overlays")
     public boolean SpyglassOverlay = true;

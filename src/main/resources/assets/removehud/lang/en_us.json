@@ -26,7 +26,20 @@
   "text.autoconfig.removehud.option.PortalOverlay": "Portal Overlay",
   "text.autoconfig.removehud.option.Vignette": "Vignette",
   "text.autoconfig.removehud.option.OtherOverlays": "Other Overlays",
+  "text.autoconfig.removehud.option.HpBar" : "HP Bar",
+  "text.autoconfig.removehud.option.ArmorBar": "Armor Bar",
+  "text.autoconfig.removehud.option.AirBar": "Oxygen Bar",
+  "text.autoconfig.removehud.option.HungerBar" : "Hunger Bar",
   "key.category.removehud": "Remove Hud but not Hand",
   "key.removehud.open_settings": "Open Mod Settings",
-  "key.removehud.toggle_mod": "Toggle HUD"
+  "key.removehud.toggle_mod": "Toggle HUD",
+  "text.autoconfig.removehud.category.OFFSETS": "HUD Offsets",
+  "text.autoconfig.removehud.option.HpXOffset" : "HP bar X Offset",
+  "text.autoconfig.removehud.option.HpYOffset" : "HP bar Y Offset",
+  "text.autoconfig.removehud.option.ArmorXOffset" : "Armor bar X Offset",
+  "text.autoconfig.removehud.option.ArmorYOffset" : "Armor bar Y Offset",
+  "text.autoconfig.removehud.option.AirXOffset" : "Oxygen bar X Offset",
+  "text.autoconfig.removehud.option.AirYOffset" : "Oxygen bar Y Offset",
+  "text.autoconfig.removehud.option.FoodXOffset" : "Hunger bar X Offset",
+  "text.autoconfig.removehud.option.FoodYOffset" : "Hunger bar Y Offset"
 }
