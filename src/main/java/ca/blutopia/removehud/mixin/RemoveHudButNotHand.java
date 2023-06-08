@@ -1,7 +1,7 @@
 package ca.blutopia.removehud.mixin;
 
 import ca.blutopia.removehud.ModConfig;
-import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
@@ -24,84 +24,84 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 @Mixin(InGameHud.class)
 public abstract class RemoveHudButNotHand {
 
-    @Shadow protected abstract void renderVignetteOverlay(MatrixStack matrices, Entity entity);
+    @Shadow protected abstract void renderVignetteOverlay(DrawContext context, Entity entity);
 
-    @Shadow protected abstract void renderOverlay(MatrixStack matrices, Identifier texture, float opacity);
+    @Shadow protected abstract void renderOverlay(DrawContext context, Identifier texture, float opacity);
 
-    @Shadow protected abstract void renderHotbar(float tickDelta, MatrixStack matrices);
+    @Shadow protected abstract void renderHotbar(float tickDelta, DrawContext context);
 
-    @Shadow public abstract void renderExperienceBar(MatrixStack matrices, int x);
+    @Shadow public abstract void renderExperienceBar(DrawContext context, int x);
 
-    @Shadow protected abstract void renderCrosshair(MatrixStack matrices);
+    @Shadow protected abstract void renderCrosshair(DrawContext context);
 
-    @Shadow protected abstract void renderPortalOverlay(MatrixStack matrices, float nauseaStrength);
+    @Shadow protected abstract void renderPortalOverlay(DrawContext context, float nauseaStrength);
 
-    @Shadow protected abstract void renderSpyglassOverlay(MatrixStack matrices, float scale);
+    @Shadow protected abstract void renderSpyglassOverlay(DrawContext context, float scale);
 
-    @Shadow protected abstract void renderStatusBars(MatrixStack matrices);
+    @Shadow protected abstract void renderStatusBars(DrawContext context);
 
-    @Shadow public abstract void renderMountJumpBar(JumpingMount mount, MatrixStack matrices, int x);
+    @Shadow public abstract void renderMountJumpBar(JumpingMount mount, DrawContext context, int x);
 
-    @Shadow protected abstract void renderMountHealth(MatrixStack matrices);
+    @Shadow protected abstract void renderMountHealth(DrawContext context);
 
-    @Shadow public abstract void renderHeldItemTooltip(MatrixStack matrices);
+    @Shadow public abstract void renderHeldItemTooltip(DrawContext context);
 
-    @Shadow protected abstract void renderStatusEffectOverlay(MatrixStack matrices);
+    @Shadow protected abstract void renderStatusEffectOverlay(DrawContext context);
 
-    @Shadow protected abstract void renderScoreboardSidebar(MatrixStack matrices, ScoreboardObjective objective);
+    @Shadow protected abstract void renderScoreboardSidebar(DrawContext context, ScoreboardObjective objective);
 
-    @Shadow protected abstract void renderAutosaveIndicator(MatrixStack matrices);
+    @Shadow protected abstract void renderAutosaveIndicator(DrawContext context);
 
-    @Shadow protected abstract void renderHealthBar(MatrixStack matrices, PlayerEntity player, int x, int y, int lines, int regeneratingHeartIndex, float maxHealth, int lastHealth, int health, int absorption, boolean blinking);
+    @Shadow protected abstract void renderHealthBar(DrawContext context, PlayerEntity player, int x, int y, int lines, int regeneratingHeartIndex, float maxHealth, int lastHealth, int health, int absorption, boolean blinking);
 
     @Shadow private int scaledHeight;
 
     @Shadow private int scaledWidth;
 
-    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHotbar(FLnet/minecraft/client/util/math/MatrixStack;)V"))
-    public void renderHotBarMix(InGameHud instance, float tickDelta, MatrixStack matrices) {
+    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHotbar(FLnet/minecraft/client/gui/DrawContext;)V"))
+    public void renderHotBarMix(InGameHud instance, float tickDelta, DrawContext context) {
         if (ModConfig.INSTANCE.HotBar) {
-            renderHotbar(tickDelta, matrices);
+            renderHotbar(tickDelta, context);
         }
     }
 
-    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderCrosshair(Lnet/minecraft/client/util/math/MatrixStack;)V"))
-    public void renderCrossHairsMix(InGameHud instance, MatrixStack matrices) {
+    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderCrosshair(Lnet/minecraft/client/gui/DrawContext;)V"))
+    public void renderCrossHairsMix(InGameHud instance, DrawContext context) {
         if (ModConfig.INSTANCE.Crosshairs) {
-            renderCrosshair(matrices);
+            renderCrosshair(context);
         }
     }
 
-    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderVignetteOverlay(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/entity/Entity;)V"))
-    public void renderVignette(InGameHud instance, MatrixStack matrices, Entity entity) {
+    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderVignetteOverlay(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/entity/Entity;)V"))
+    public void renderVignette(InGameHud instance, DrawContext context, Entity entity) {
         if (ModConfig.INSTANCE.Vignette) {
-            renderVignetteOverlay(matrices, entity);
+            renderVignetteOverlay(context, entity);
         }
     }
 
-    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderOverlay(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/util/Identifier;F)V"))
-    public void renderOverlays(InGameHud instance, MatrixStack matrices, Identifier texture, float opacity) {
+    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderOverlay(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/util/Identifier;F)V"))
+    public void renderOverlays(InGameHud instance, DrawContext context, Identifier texture, float opacity) {
         if (ModConfig.INSTANCE.OtherOverlays) {
-            renderOverlay(matrices, texture, opacity);
+            renderOverlay(context, texture, opacity);
         }
     }
 
-    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderPortalOverlay(Lnet/minecraft/client/util/math/MatrixStack;F)V"))
-    public void renderPortalOverlays(InGameHud instance, MatrixStack matrices, float nauseaStrength) {
+    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderPortalOverlay(Lnet/minecraft/client/gui/DrawContext;F)V"))
+    public void renderPortalOverlays(InGameHud instance, DrawContext context, float nauseaStrength) {
         if (ModConfig.INSTANCE.PortalOverlay) {
-            renderPortalOverlay(matrices, nauseaStrength);
+            renderPortalOverlay(context, nauseaStrength);
         }
     }
 
-    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderSpyglassOverlay(Lnet/minecraft/client/util/math/MatrixStack;F)V"))
-    public void renderSpyglassOverlays(InGameHud instance, MatrixStack matrices, float scale) {
+    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderSpyglassOverlay(Lnet/minecraft/client/gui/DrawContext;F)V"))
+    public void renderSpyglassOverlays(InGameHud instance, DrawContext context, float scale) {
         if (ModConfig.INSTANCE.SpyglassOverlay) {
-            renderSpyglassOverlay(matrices, scale);
+            renderSpyglassOverlay(context, scale);
         }
     }
 
-    @Redirect(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHealthBar(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/entity/player/PlayerEntity;IIIIFIIIZ)V"))
-    private void inj(InGameHud instance, MatrixStack matrices, PlayerEntity player, int x, int y, int lines, int regeneratingHeartIndex, float maxHealth, int lastHealth, int health, int absorption, boolean blinking) {
+    @Redirect(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHealthBar(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/entity/player/PlayerEntity;IIIIFIIIZ)V"))
+    private void inj(InGameHud instance, DrawContext context, PlayerEntity player, int x, int y, int lines, int regeneratingHeartIndex, float maxHealth, int lastHealth, int health, int absorption, boolean blinking) {
 
 //        switch (ModConfig.INSTANCE.HpBarOrigin) {
 //            case TOPLEFT -> {
@@ -126,165 +126,165 @@ public abstract class RemoveHudButNotHand {
 //        }
 
         if (ModConfig.INSTANCE.HpBar) {
-            renderHealthBar(matrices, player, x + ModConfig.INSTANCE.HpXOffset, y + ModConfig.INSTANCE.HpYOffset, lines, regeneratingHeartIndex, maxHealth, lastHealth, health, absorption, blinking);
+            renderHealthBar(context, player, x + ModConfig.INSTANCE.HpXOffset, y + ModConfig.INSTANCE.HpYOffset, lines, regeneratingHeartIndex, maxHealth, lastHealth, health, absorption, blinking);
         }
     }
 
-    @Redirect(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;drawTexture(Lnet/minecraft/client/util/math/MatrixStack;IIIIII)V", ordinal = 0))
-    private void inj(MatrixStack matrixStack, int x, int y, int z, int a, int b, int c) {
+    @Redirect(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTexture(Lnet/minecraft/util/Identifier;IIIIII)V", ordinal = 0))
+    private void inj(DrawContext instance, Identifier texture, int x, int y, int u, int v, int width, int height) {
 
         if (ModConfig.INSTANCE.ArmorBar) {
-            DrawableHelper.drawTexture(matrixStack, x + ModConfig.INSTANCE.ArmorXOffset, y + ModConfig.INSTANCE.ArmorYOffset, z, a,b,c);
+            instance.drawTexture(texture, x + ModConfig.INSTANCE.ArmorXOffset, y + ModConfig.INSTANCE.ArmorYOffset, u, v, width, height);
         }
     }
 
-    @Redirect(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;drawTexture(Lnet/minecraft/client/util/math/MatrixStack;IIIIII)V", ordinal = 1))
-    private void inj1(MatrixStack matrixStack, int x, int y, int z, int a, int b, int c) {
+    @Redirect(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTexture(Lnet/minecraft/util/Identifier;IIIIII)V", ordinal = 1))
+    private void inj1(DrawContext instance, Identifier texture, int x, int y, int u, int v, int width, int height) {
 
         if (ModConfig.INSTANCE.ArmorBar) {
-            DrawableHelper.drawTexture(matrixStack, x + ModConfig.INSTANCE.ArmorXOffset, y + ModConfig.INSTANCE.ArmorYOffset, z, a,b,c);
+            instance.drawTexture(texture, x + ModConfig.INSTANCE.ArmorXOffset, y + ModConfig.INSTANCE.ArmorYOffset, u, v, width, height);
         }
     }
 
-    @Redirect(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;drawTexture(Lnet/minecraft/client/util/math/MatrixStack;IIIIII)V", ordinal = 2))
-    private void inj2(MatrixStack matrixStack, int x, int y, int z, int a, int b, int c) {
+    @Redirect(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTexture(Lnet/minecraft/util/Identifier;IIIIII)V", ordinal = 2))
+    private void inj2(DrawContext instance, Identifier texture, int x, int y, int u, int v, int width, int height) {
 
         if (ModConfig.INSTANCE.ArmorBar) {
-            DrawableHelper.drawTexture(matrixStack, x + ModConfig.INSTANCE.ArmorXOffset, y + ModConfig.INSTANCE.ArmorYOffset, z, a,b,c);
+            instance.drawTexture(texture, x + ModConfig.INSTANCE.ArmorXOffset, y + ModConfig.INSTANCE.ArmorYOffset, u, v, width, height);
         }
     }
 
 
-    @Redirect(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;drawTexture(Lnet/minecraft/client/util/math/MatrixStack;IIIIII)V", ordinal = 3))
-    private void inj3(MatrixStack matrixStack, int x, int y, int z, int a, int b, int c) {
+    @Redirect(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTexture(Lnet/minecraft/util/Identifier;IIIIII)V", ordinal = 3))
+    private void inj3(DrawContext instance, Identifier texture, int x, int y, int u, int v, int width, int height) {
 
         if (ModConfig.INSTANCE.HungerBar) {
-            DrawableHelper.drawTexture(matrixStack, x + ModConfig.INSTANCE.FoodXOffset, y + ModConfig.INSTANCE.FoodYOffset, z, a,b,c);
+            instance.drawTexture(texture, x + ModConfig.INSTANCE.FoodXOffset, y + ModConfig.INSTANCE.FoodYOffset, u, v, width, height);
         }
     }
 
-    @Redirect(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;drawTexture(Lnet/minecraft/client/util/math/MatrixStack;IIIIII)V", ordinal = 4))
-    private void inj4(MatrixStack matrixStack, int x, int y, int z, int a, int b, int c) {
+    @Redirect(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTexture(Lnet/minecraft/util/Identifier;IIIIII)V", ordinal = 4))
+    private void inj4(DrawContext instance, Identifier texture, int x, int y, int u, int v, int width, int height) {
 
         if (ModConfig.INSTANCE.HungerBar) {
-            DrawableHelper.drawTexture(matrixStack, x + ModConfig.INSTANCE.FoodXOffset, y + ModConfig.INSTANCE.FoodYOffset, z, a,b,c);
+            instance.drawTexture(texture, x + ModConfig.INSTANCE.FoodXOffset, y + ModConfig.INSTANCE.FoodYOffset, u, v, width, height);
         }
     }
 
-    @Redirect(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;drawTexture(Lnet/minecraft/client/util/math/MatrixStack;IIIIII)V", ordinal = 5))
-    private void inj5(MatrixStack matrixStack, int x, int y, int z, int a, int b, int c) {
+    @Redirect(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTexture(Lnet/minecraft/util/Identifier;IIIIII)V", ordinal = 5))
+    private void inj5(DrawContext instance, Identifier texture, int x, int y, int u, int v, int width, int height) {
 
         if (ModConfig.INSTANCE.HungerBar) {
-            DrawableHelper.drawTexture(matrixStack, x + ModConfig.INSTANCE.FoodXOffset, y + ModConfig.INSTANCE.FoodYOffset, z, a,b,c);
+            instance.drawTexture(texture, x + ModConfig.INSTANCE.FoodXOffset, y + ModConfig.INSTANCE.FoodYOffset, u, v, width, height);
         }
     }
 
-    @Redirect(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;drawTexture(Lnet/minecraft/client/util/math/MatrixStack;IIIIII)V", ordinal = 6))
-    private void inj6(MatrixStack matrixStack, int x, int y, int z, int a, int b, int c) {
+    @Redirect(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTexture(Lnet/minecraft/util/Identifier;IIIIII)V", ordinal = 6))
+    private void inj6(DrawContext instance, Identifier texture, int x, int y, int u, int v, int width, int height) {
 
         if (ModConfig.INSTANCE.AirBar) {
-            DrawableHelper.drawTexture(matrixStack, x + ModConfig.INSTANCE.AirXOffset, y + ModConfig.INSTANCE.AirYOffset, z, a,b,c);
+            instance.drawTexture(texture, x + ModConfig.INSTANCE.AirXOffset, y + ModConfig.INSTANCE.AirYOffset, u, v, width, height);
         }
     }
-    @Redirect(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;drawTexture(Lnet/minecraft/client/util/math/MatrixStack;IIIIII)V", ordinal = 7))
-    private void inj7(MatrixStack matrixStack, int x, int y, int z, int a, int b, int c) {
+    @Redirect(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTexture(Lnet/minecraft/util/Identifier;IIIIII)V", ordinal = 7))
+    private void inj7(DrawContext instance, Identifier texture, int x, int y, int u, int v, int width, int height) {
 
         if (ModConfig.INSTANCE.AirBar) {
-            DrawableHelper.drawTexture(matrixStack, x + ModConfig.INSTANCE.AirXOffset, y + ModConfig.INSTANCE.AirYOffset, z, a,b,c);
+            instance.drawTexture(texture, x + ModConfig.INSTANCE.AirXOffset, y + ModConfig.INSTANCE.AirYOffset, u, v, width, height);
         }
 
     }
 
-    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderMountHealth(Lnet/minecraft/client/util/math/MatrixStack;)V"))
-    public void renderMountHealthMix(InGameHud instance, MatrixStack matrices) {
+    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderMountHealth(Lnet/minecraft/client/gui/DrawContext;)V"))
+    public void renderMountHealthMix(InGameHud instance, DrawContext context) {
 
         if (ModConfig.INSTANCE.MountHealth) {
-            renderMountHealth(matrices);
+            renderMountHealth(context);
         }
 
     }
 
-    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderMountJumpBar(Lnet/minecraft/entity/JumpingMount;Lnet/minecraft/client/util/math/MatrixStack;I)V"))
-    public void renderMountJumpMix(InGameHud instance, JumpingMount mount, MatrixStack matrices, int x) {
+    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderMountJumpBar(Lnet/minecraft/entity/JumpingMount;Lnet/minecraft/client/gui/DrawContext;I)V"))
+    public void renderMountJumpMix(InGameHud instance, JumpingMount mount, DrawContext context, int x) {
         if (ModConfig.INSTANCE.MountJumpbar) {
-            renderMountJumpBar(mount, matrices, x);
+            renderMountJumpBar(mount, context, x);
         }
     }
 
-    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHeldItemTooltip(Lnet/minecraft/client/util/math/MatrixStack;)V"))
-    public void renderHeldItemTooltipMix(InGameHud instance, MatrixStack matrices) {
+    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHeldItemTooltip(Lnet/minecraft/client/gui/DrawContext;)V"))
+    public void renderHeldItemTooltipMix(InGameHud instance, DrawContext context) {
         if (ModConfig.INSTANCE.HeldItemTooltip) {
-            renderHeldItemTooltip(matrices);
+            renderHeldItemTooltip(context);
         }
     }
 
-    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/SpectatorHud;renderSpectatorMenu(Lnet/minecraft/client/util/math/MatrixStack;)V"))
-    public void renderSpectatorMenu(SpectatorHud instance, MatrixStack matrices) {
+    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/SpectatorHud;renderSpectatorMenu(Lnet/minecraft/client/gui/DrawContext;)V"))
+    public void renderSpectatorMenu(SpectatorHud instance, DrawContext context) {
         if (ModConfig.INSTANCE.SpectatorMenu) {
-            instance.renderSpectatorMenu(matrices);
+            instance.renderSpectatorMenu(context);
         }
     }
 
-    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/SpectatorHud;render(Lnet/minecraft/client/util/math/MatrixStack;)V"))
-    public void renderSpectatorHud(SpectatorHud instance, MatrixStack matrices) {
+    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/SpectatorHud;render(Lnet/minecraft/client/gui/DrawContext;)V"))
+    public void renderSpectatorHud(SpectatorHud instance, DrawContext context) {
         if (ModConfig.INSTANCE.SpectatorHud) {
-            instance.render(matrices);
+            instance.render(context);
         }
     }
 
-    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/BossBarHud;render(Lnet/minecraft/client/util/math/MatrixStack;)V"))
-    public void renderBossBar(BossBarHud instance, MatrixStack matrices) {
+    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/BossBarHud;render(Lnet/minecraft/client/gui/DrawContext;)V"))
+    public void renderBossBar(BossBarHud instance, DrawContext context) {
         if (ModConfig.INSTANCE.BossBar) {
-            instance.render(matrices);
+            instance.render(context);
         }
     }
 
-    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderStatusEffectOverlay(Lnet/minecraft/client/util/math/MatrixStack;)V"))
-    public void renderStatusEffectOverlay(InGameHud instance, MatrixStack matrices) {
+    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderStatusEffectOverlay(Lnet/minecraft/client/gui/DrawContext;)V"))
+    public void renderStatusEffectOverlay(InGameHud instance, DrawContext context) {
         if (ModConfig.INSTANCE.StatusEffectOverlay) {
-            renderStatusEffectOverlay(matrices);
+            renderStatusEffectOverlay(context);
         }
     }
 
-    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderScoreboardSidebar(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/scoreboard/ScoreboardObjective;)V"))
-    public void renderScoreBoard(InGameHud instance, MatrixStack matrices, ScoreboardObjective objective) {
+    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderScoreboardSidebar(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/scoreboard/ScoreboardObjective;)V"))
+    public void renderScoreBoard(InGameHud instance, DrawContext context, ScoreboardObjective objective) {
         if (ModConfig.INSTANCE.ScoreBoard) {
-            renderScoreboardSidebar(matrices, objective);
+            renderScoreboardSidebar(context, objective);
         }
     }
 
-    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/DebugHud;render(Lnet/minecraft/client/util/math/MatrixStack;)V"))
-    public void renderDebugHud(DebugHud instance, MatrixStack matrices) {
+    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/DebugHud;render(Lnet/minecraft/client/gui/DrawContext;)V"))
+    public void renderDebugHud(DebugHud instance, DrawContext context) {
         if (ModConfig.INSTANCE.DebugHud) {
-            instance.render(matrices);
+            instance.render(context);
         }
     }
 
-    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/PlayerListHud;render(Lnet/minecraft/client/util/math/MatrixStack;ILnet/minecraft/scoreboard/Scoreboard;Lnet/minecraft/scoreboard/ScoreboardObjective;)V"))
-    public void renderPlayerList(PlayerListHud instance, MatrixStack matrices, int scaledWindowWidth, Scoreboard scoreboard, ScoreboardObjective objective) {
+    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/PlayerListHud;render(Lnet/minecraft/client/gui/DrawContext;ILnet/minecraft/scoreboard/Scoreboard;Lnet/minecraft/scoreboard/ScoreboardObjective;)V"))
+    public void renderPlayerList(PlayerListHud instance, DrawContext context, int scaledWindowWidth, Scoreboard scoreboard, ScoreboardObjective objective) {
         if (ModConfig.INSTANCE.PlayerList) {
-            instance.render(matrices, scaledWindowWidth, scoreboard, objective);
+            instance.render(context, scaledWindowWidth, scoreboard, objective);
         }
     }
 
-    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/ChatHud;render(Lnet/minecraft/client/util/math/MatrixStack;III)V"))
-    public void renderChatHud(ChatHud instance, MatrixStack matrices, int currentTick, int mouseX, int mouseY) {
+    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/ChatHud;render(Lnet/minecraft/client/gui/DrawContext;III)V"))
+    public void renderChatHud(ChatHud instance, DrawContext context, int currentTick, int mouseX, int mouseY) {
         if (ModConfig.INSTANCE.ChatHud) {
-            instance.render(matrices, currentTick, mouseX, mouseY);
+            instance.render(context, currentTick, mouseX, mouseY);
         }
     }
 
-    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderAutosaveIndicator(Lnet/minecraft/client/util/math/MatrixStack;)V"))
-    public void renderAutosave(InGameHud instance, MatrixStack matrices) {
+    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderAutosaveIndicator(Lnet/minecraft/client/gui/DrawContext;)V"))
+    public void renderAutosave(InGameHud instance, DrawContext context) {
         if (ModConfig.INSTANCE.Autosave) {
-            renderAutosaveIndicator(matrices);
+            renderAutosaveIndicator(context);
         }
     }
 
-    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderExperienceBar(Lnet/minecraft/client/util/math/MatrixStack;I)V"))
-    public void renderAutosave(InGameHud instance, MatrixStack matrices, int x) {
+    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderExperienceBar(Lnet/minecraft/client/gui/DrawContext;I)V"))
+    public void renderAutosave(InGameHud instance, DrawContext context, int x) {
         if (ModConfig.INSTANCE.ExpBar) {
-            renderExperienceBar(matrices, x);
+            renderExperienceBar(context, x);
         }
     }
 
