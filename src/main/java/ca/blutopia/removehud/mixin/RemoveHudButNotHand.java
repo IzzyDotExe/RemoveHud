@@ -1,6 +1,7 @@
 package ca.blutopia.removehud.mixin;
 
 import ca.blutopia.removehud.ModConfig;
+import com.terraformersmc.modmenu.util.mod.Mod;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.*;
 import net.minecraft.client.util.math.MatrixStack;
@@ -103,30 +104,32 @@ public abstract class RemoveHudButNotHand {
     @Redirect(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHealthBar(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/entity/player/PlayerEntity;IIIIFIIIZ)V"))
     private void inj(InGameHud instance, DrawContext context, PlayerEntity player, int x, int y, int lines, int regeneratingHeartIndex, float maxHealth, int lastHealth, int health, int absorption, boolean blinking) {
 
-//        switch (ModConfig.INSTANCE.HpBarOrigin) {
-//            case TOPLEFT -> {
-//                x = 0;
-//                y = 0;
-//            }
-//            case TOPRIGHT -> {
-//                x = scaledWidth;
-//                y = 0;
-//            }
-//            case BOTTOMLEFFT -> {
-//                x =0;
-//                y = scaledHeight;
-//            }
-//
-//            case BOTTONRIGHT -> {
-//                x = scaledWidth;
-//                y = scaledHeight;
-//            }
-//            default -> {
-//            }
-//        }
+        int xoffset = ModConfig.INSTANCE.HpXOffset;
+        int yoffset = ModConfig.INSTANCE.HpYOffset;
+
+        int xorigin = x;
+        int yorigin = y;
+
+        if (ModConfig.INSTANCE.OffsetSnapping)
+            xoffset = xoffset < ModConfig.INSTANCE.OffsetSnappingStrength && xoffset > -ModConfig.INSTANCE.OffsetSnappingStrength ? 0 : xoffset;
+
+        if (ModConfig.INSTANCE.OffsetSnapping)
+            yoffset = yoffset < ModConfig.INSTANCE.OffsetSnappingStrength && yoffset > -ModConfig.INSTANCE.OffsetSnappingStrength ? 0 : yoffset;
 
         if (ModConfig.INSTANCE.HpBar) {
-            renderHealthBar(context, player, x + ModConfig.INSTANCE.HpXOffset, y + ModConfig.INSTANCE.HpYOffset, lines, regeneratingHeartIndex, maxHealth, lastHealth, health, absorption, blinking);
+
+            renderHealthBar(
+
+                    context, player,
+
+                    xorigin + xoffset,
+                    yorigin + yoffset,
+
+                    lines, regeneratingHeartIndex, maxHealth,
+                    lastHealth, health, absorption, blinking
+
+            );
+
         }
     }
 

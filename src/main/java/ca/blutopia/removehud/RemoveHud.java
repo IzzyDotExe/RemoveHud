@@ -1,5 +1,6 @@
 package ca.blutopia.removehud;
 
+import ca.blutopia.removehud.gui.HudEditorScreen;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -20,7 +21,7 @@ public class RemoveHud implements ClientModInitializer {
 
 	private KeyBinding keynmap;
 	private KeyBinding keynmap2;
-
+	private KeyBinding keynmap3;
 	@Override
 	public void onInitializeClient() {
 		// This code runs as soon as Minecraft is in a mod-load-ready state.
@@ -31,13 +32,26 @@ public class RemoveHud implements ClientModInitializer {
 
 		keynmap = new KeyBinding("key.removehud.toggle_mod", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F7,"key.category.removehud");
 		keynmap2 = new KeyBinding("key.removehud.open_settings", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F8, "key.category.removehud");
+		keynmap3 = new KeyBinding("key.removehud.open_editor", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F9, "key.category.removehud");
 
 		KeyBindingHelper.registerKeyBinding(keynmap);
 		KeyBindingHelper.registerKeyBinding(keynmap2);
+		KeyBindingHelper.registerKeyBinding(keynmap3);
 
 		ClientTickEvents.END_CLIENT_TICK.register(this::removeHudToggleListener);
 
 		ClientTickEvents.END_CLIENT_TICK.register(this::settingsMenuListener);
+
+		ClientTickEvents.END_CLIENT_TICK.register(this::editorMenuListener);
+
+	}
+
+	private void editorMenuListener(MinecraftClient client) {
+
+		while (keynmap3.wasPressed()) {
+			Screen editor = new HudEditorScreen();
+			client.setScreen(editor);
+		}
 
 	}
 

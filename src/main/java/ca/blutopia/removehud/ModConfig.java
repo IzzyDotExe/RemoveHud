@@ -77,6 +77,14 @@ public class ModConfig implements ConfigData {
     @Comment("HP bar X offset")
     public int HpXOffset = 0;
 
+    public void setHpXOffset(int hpXOffset) {
+        HpXOffset += hpXOffset;
+    }
+
+    public void setHpYOffset(int hpYOffset) {
+        HpYOffset += hpYOffset;
+    }
+
     @ConfigEntry.Category("OFFSETS")
     @Comment("HP bar Y offset")
     public int HpYOffset = 0;
@@ -92,6 +100,14 @@ public class ModConfig implements ConfigData {
     @ConfigEntry.Category("OFFSETS")
     @Comment("Armor bar X offset")
     public int ArmorXOffset = 0;
+
+    public void setArmorXOffset(int armorXOffset) {
+        ArmorXOffset += armorXOffset;
+    }
+
+    public void setArmorYOffset(int armorYOffset) {
+        ArmorYOffset += armorYOffset;
+    }
 
     @ConfigEntry.Category("OFFSETS")
     @Comment("Armor bar Y offset")
@@ -113,7 +129,15 @@ public class ModConfig implements ConfigData {
     @Comment("Air bar Y offset")
     public int AirYOffset = 0;
 
-//    @ConfigEntry.Category("OFFSETS")
+    public void setAirXOffset(int airXOffset) {
+        AirXOffset += airXOffset;
+    }
+
+    public void setAirYOffset(int airYOffset) {
+        AirYOffset += airYOffset;
+    }
+
+    //    @ConfigEntry.Category("OFFSETS")
 //    @Comment("Hunger bar origin point")
 //    public OriginPoint FoodBarOrigin = OriginPoint.ORIGIN;
 
@@ -128,6 +152,14 @@ public class ModConfig implements ConfigData {
     @ConfigEntry.Category("OFFSETS")
     @Comment("Hunger bar Y offset")
     public int FoodYOffset = 0;
+
+    public void setFoodXOffset(int foodXOffset) {
+        FoodXOffset += foodXOffset;
+    }
+
+    public void setFoodYOffset(int foodYOffset) {
+        FoodYOffset += foodYOffset;
+    }
 
     @ConfigEntry.Category("Overlays")
     public boolean SpyglassOverlay = true;
@@ -150,5 +182,11 @@ public class ModConfig implements ConfigData {
 
     @ConfigEntry.Category("HUD")
     public boolean HotBar = true;
+
+    @ConfigEntry.Category("Editor")
+    public boolean OffsetSnapping = true;
+    @ConfigEntry.Category("Editor")
+    public int OffsetSnappingStrength = 5;
+
 
 }
