@@ -11,15 +11,6 @@ import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 @Config(name="removehud")
 public class ModConfig implements ConfigData {
 
-    @ConfigEntry.Gui.Excluded
-    public static ModConfig INSTANCE;
-
-    public static void init() {
-
-        AutoConfig.register(ModConfig.class, JanksonConfigSerializer::new);
-        INSTANCE = AutoConfig.getConfigHolder(ModConfig.class).getConfig();
-    }
-
     @Comment("If false block outlines will not be visible")
     public boolean highlightBlocks = true;
 
@@ -68,10 +59,10 @@ public class ModConfig implements ConfigData {
     @ConfigEntry.Category("HUD")
     @Comment("Health hearts")
     public boolean HpBar = true;
-//
-//    @ConfigEntry.Category("OFFSETS")
-//    @Comment("HP bar origin point")
-//    public OriginPoint HpBarOrigin = OriginPoint.ORIGIN;
+
+    @ConfigEntry.Category("OFFSETS")
+    @Comment("HP bar origin point")
+    public OriginPoint HpBarOrigin = OriginPoint.ORIGIN;
 
     @ConfigEntry.Category("OFFSETS")
     @Comment("HP bar X offset")
@@ -143,7 +134,7 @@ public class ModConfig implements ConfigData {
 
     @ConfigEntry.Category("HUD")
     @Comment("Hunger bar")
-    public boolean HungerBar;
+    public boolean HungerBar = true;
 
     @ConfigEntry.Category("OFFSETS")
     @Comment("Hunger bar X offset")

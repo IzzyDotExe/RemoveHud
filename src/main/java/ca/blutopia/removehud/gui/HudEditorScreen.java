@@ -3,6 +3,7 @@ package ca.blutopia.removehud.gui;
 import ca.blutopia.removehud.config.HUDItems;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.Text;
@@ -106,6 +107,9 @@ public class HudEditorScreen extends Screen {
 
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+
+        if (!checkButtonOver(mouseX, mouseY)) return false;
+
         try {
             _selected.MoveX(deltaX > 0? 1 : deltaX == 0? 0 : -1);
         } catch (NoSuchMethodException e) {
@@ -126,15 +130,36 @@ public class HudEditorScreen extends Screen {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
+
         glfwSetInputMode(_windowHandle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
         return super.mouseClicked(mouseX, mouseY, button);
+
     }
 
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
+
         glfwSetInputMode(_windowHandle, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+
         return super.mouseReleased(mouseX, mouseY, button);
 
+    }
+
+
+    private boolean checkButtonOver(double mouseX, double mouseY) {
+        if (moveRightButton.isMouseOver(mouseX, mouseY))
+            return false;
+
+        if (moveLeftButton.isMouseOver(mouseX, mouseY))
+            return false;
+
+        if (moveDownButton.isMouseOver(mouseX, mouseY))
+            return false;
+
+        if (moveUpButton.isMouseOver(mouseX, mouseY))
+            return false;
+        return true;
     }
 
     @Override

@@ -18,21 +18,23 @@ public class RemoveHud implements ClientModInitializer {
 	// It is considered best practice to use your mod id as the logger's name.
 	// That way, it's clear which mod wrote info, warnings, and errors.
 	public static final Logger LOGGER = LogManager.getLogger("removehud");
-
+	public static HUDManager HudManagerInstance;
 	private KeyBinding keynmap;
 	private KeyBinding keynmap2;
 	private KeyBinding keynmap3;
 	@Override
 	public void onInitializeClient() {
+
 		// This code runs as soon as Minecraft is in a mod-load-ready state.
 		// However, some things (like resources) may still be uninitialized.
 		// Proceed with mild caution.
 
-		ModConfig.init();
+		HudManagerInstance = new HUDManager();
+		// ModConfig.init();
 
-		keynmap = new KeyBinding("key.removehud.toggle_mod", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F7,"key.category.removehud");
-		keynmap2 = new KeyBinding("key.removehud.open_settings", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F8, "key.category.removehud");
-		keynmap3 = new KeyBinding("key.removehud.open_editor", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F9, "key.category.removehud");
+		keynmap = new KeyBinding("key.removehud.toggle_mod", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F1,"key.category.removehud");
+		keynmap2 = new KeyBinding("key.removehud.open_settings", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F7, "key.category.removehud");
+		keynmap3 = new KeyBinding("key.removehud.open_editor", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F8, "key.category.removehud");
 
 		KeyBindingHelper.registerKeyBinding(keynmap);
 		KeyBindingHelper.registerKeyBinding(keynmap2);
@@ -62,8 +64,10 @@ public class RemoveHud implements ClientModInitializer {
 		}
 	}
 	private void removeHudToggleListener(MinecraftClient client) {
+
 		while (keynmap.wasPressed()) {
-			ModConfig.INSTANCE.removeHud = !ModConfig.INSTANCE.removeHud;
+			client.options.hudHidden = false;
+			HudManagerInstance.toggleHud();
 		}
 	}
 
