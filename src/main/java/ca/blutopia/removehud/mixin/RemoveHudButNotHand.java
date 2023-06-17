@@ -7,10 +7,13 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.JumpingMount;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.ScoreboardObjective;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.MathHelper;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -57,6 +60,12 @@ public abstract class RemoveHudButNotHand {
     @Shadow private int scaledHeight;
 
     @Shadow private int scaledWidth;
+
+    @Shadow protected abstract PlayerEntity getCameraPlayer();
+
+    @Shadow @Final private static Identifier ICONS;
+
+    @Shadow private int renderHealthValue;
 
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHotbar(FLnet/minecraft/client/gui/DrawContext;)V"))
     public void renderHotBarMix(InGameHud instance, float tickDelta, DrawContext context) {
@@ -129,27 +138,57 @@ public abstract class RemoveHudButNotHand {
         }
     }
 
+    @Inject(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiler/Profiler;push(Ljava/lang/String;)V", ordinal = 0))
+    private void inject(DrawContext context, CallbackInfo ci) {
+
+        if (CONFIG.ArmorBar) {
+
+            int xoffset = HUD_MANAGER.getArmorXOffset();
+            int yoffset = HUD_MANAGER.getArmorYOffset();
+
+            int[] origin = HUD_MANAGER.calculateArmorOriginPoints(scaledWidth, scaledHeight, getCameraPlayer(), renderHealthValue);
+
+            int xorigin = origin[0];
+            int yorigin = origin[1];
+
+            renderArmorBar(context, getCameraPlayer(), xorigin + xoffset, yorigin + yoffset, ICONS);
+        }
+
+    }
+
     @Redirect(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTexture(Lnet/minecraft/util/Identifier;IIIIII)V", ordinal = 0))
     private void inj(DrawContext instance, Identifier texture, int x, int y, int u, int v, int width, int height) {
 
-        if (CONFIG.ArmorBar) {
-            instance.drawTexture(texture, x + CONFIG.ArmorXOffset, y + CONFIG.ArmorYOffset, u, v, width, height);
-        }
     }
 
     @Redirect(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTexture(Lnet/minecraft/util/Identifier;IIIIII)V", ordinal = 1))
     private void inj1(DrawContext instance, Identifier texture, int x, int y, int u, int v, int width, int height) {
 
-        if (CONFIG.ArmorBar) {
-            instance.drawTexture(texture, x + CONFIG.ArmorXOffset, y + CONFIG.ArmorYOffset, u, v, width, height);
-        }
     }
 
     @Redirect(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTexture(Lnet/minecraft/util/Identifier;IIIIII)V", ordinal = 2))
     private void inj2(DrawContext instance, Identifier texture, int x, int y, int u, int v, int width, int height) {
 
-        if (CONFIG.ArmorBar) {
-            instance.drawTexture(texture, x + CONFIG.ArmorXOffset, y + CONFIG.ArmorYOffset, u, v, width, height);
+    }
+
+    public void renderArmorBar(DrawContext context, PlayerEntity playerEntity, int x, int y, Identifier icons) {
+        int armor = playerEntity.getArmor();
+        int xrigid;
+        for(int w = 0; w < 10; ++w) {
+            if (armor > 0) {
+                xrigid = x + w * 8;
+                if (w * 2 + 1 < armor) {
+                    context.drawTexture(icons, xrigid, y, 34, 9, 9, 9);
+                }
+
+                if (w * 2 + 1 == armor) {
+                    context.drawTexture(icons, xrigid, y, 25, 9, 9, 9);
+                }
+
+                if (w * 2 + 1 > armor) {
+                    context.drawTexture(icons, xrigid, y, 16, 9, 9, 9);
+                }
+            }
         }
     }
 
