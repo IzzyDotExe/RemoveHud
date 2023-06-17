@@ -1,6 +1,6 @@
 package ca.blutopia.removehud.gui;
 
-import ca.blutopia.removehud.ModConfig;
+import ca.blutopia.removehud.config.ModConfig;
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
 import me.shedaniel.autoconfig.AutoConfig;

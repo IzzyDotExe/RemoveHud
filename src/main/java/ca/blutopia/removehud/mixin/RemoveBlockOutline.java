@@ -1,7 +1,7 @@
 package ca.blutopia.removehud.mixin;
 
 import ca.blutopia.removehud.HUDManager;
-import ca.blutopia.removehud.ModConfig;
+import ca.blutopia.removehud.config.ModConfig;
 import ca.blutopia.removehud.RemoveHud;
 import net.minecraft.client.render.GameRenderer;
 import org.spongepowered.asm.mixin.Mixin;

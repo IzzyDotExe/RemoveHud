@@ -1,5 +1,6 @@
 package ca.blutopia.removehud;
 
+import ca.blutopia.removehud.config.ModConfig;
 import ca.blutopia.removehud.gui.HudEditorScreen;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.fabricmc.api.ClientModInitializer;
@@ -47,7 +48,6 @@ public class RemoveHud implements ClientModInitializer {
 		ClientTickEvents.END_CLIENT_TICK.register(this::editorMenuListener);
 
 	}
-
 	private void editorMenuListener(MinecraftClient client) {
 
 		while (keynmap3.wasPressed()) {
@@ -56,7 +56,6 @@ public class RemoveHud implements ClientModInitializer {
 		}
 
 	}
-
 	private void settingsMenuListener(MinecraftClient client) {
 		while (keynmap2.wasPressed()) {
 			Screen settings = AutoConfig.getConfigScreen(ModConfig.class, null).get();

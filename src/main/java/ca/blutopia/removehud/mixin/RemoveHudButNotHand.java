@@ -1,16 +1,12 @@
 package ca.blutopia.removehud.mixin;
 
 import ca.blutopia.removehud.HUDManager;
-import ca.blutopia.removehud.ModConfig;
+import ca.blutopia.removehud.config.ModConfig;
 import ca.blutopia.removehud.RemoveHud;
-import com.terraformersmc.modmenu.util.mod.Mod;
-import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.*;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.JumpingMount;
-import net.minecraft.entity.player.HungerManager;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.ScoreboardObjective;
@@ -21,8 +17,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(InGameHud.class)
 public abstract class RemoveHudButNotHand {
@@ -115,7 +109,7 @@ public abstract class RemoveHudButNotHand {
             int xoffset = HUD_MANAGER.getHpXOffset();
             int yoffset = HUD_MANAGER.getHpYOffset();
 
-            int[] origin = HUD_MANAGER.calculateHpOriginPoints(x, y, lines, regeneratingHeartIndex, maxHealth, lastHealth, health, absorption);
+            int[] origin = HUD_MANAGER.calculateHpOriginPoints(x, y, lines, regeneratingHeartIndex, maxHealth, lastHealth, health, absorption, scaledWidth, scaledHeight);
 
             int xorigin = origin[0];
             int yorigin = origin[1];

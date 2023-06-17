@@ -1,11 +1,12 @@
 package ca.blutopia.removehud.gui;
 
 import ca.blutopia.removehud.config.HUDItems;
+import ca.blutopia.removehud.config.OriginPoint;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.CyclingButtonWidget;
 import net.minecraft.text.Text;
 
 import java.awt.*;
@@ -102,7 +103,30 @@ public class HudEditorScreen extends Screen {
         addDrawableChild(moveRightButton);
 //        addDrawableChild(moveDownButton);
 //        addDrawableChild(moveUpButton);
+        CyclingButtonWidget<OriginPoint> widg = null;
+        try {
+            widg = new CyclingButtonWidget.Builder<OriginPoint>(x -> {
+                return switch (x) {
 
+                    case ORIGIN -> Text.of("origin");
+                    case TOPLEFT -> Text.of("topleft");
+                    case BOTTOMLEFFT -> Text.of("bottomleft");
+                    case TOPRIGHT -> Text.of("topright");
+                    case BOTTONRIGHT -> Text.of("bottomright");
+                };
+            }).initially(_selected.getOrigin())
+                    .values(OriginPoint.values())
+                    .build(20, 30, 120, 20, Text.of("Origin"), (sender, value) -> {
+                        try {
+                            _selected.setOrigin(value);
+                        } catch (NoSuchMethodException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+        addDrawableChild(widg);
     }
 
     @Override

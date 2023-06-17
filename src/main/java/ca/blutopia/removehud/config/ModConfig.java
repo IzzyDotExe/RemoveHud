@@ -1,4 +1,4 @@
-package ca.blutopia.removehud;
+package ca.blutopia.removehud.config;
 
 import ca.blutopia.removehud.config.OriginPoint;
 import me.shedaniel.autoconfig.annotation.Config;
@@ -68,13 +68,6 @@ public class ModConfig implements ConfigData {
     @Comment("HP bar X offset")
     public int HpXOffset = 0;
 
-    public void setHpXOffset(int hpXOffset) {
-        HpXOffset += hpXOffset;
-    }
-
-    public void setHpYOffset(int hpYOffset) {
-        HpYOffset += hpYOffset;
-    }
 
     @ConfigEntry.Category("OFFSETS")
     @Comment("HP bar Y offset")
