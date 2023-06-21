@@ -5,6 +5,8 @@ public enum HUDItems {
     Food,
     Air,
     Armor,
-    Hp
+    Hp,
+    HotBar,
+    Autosave
 
 }

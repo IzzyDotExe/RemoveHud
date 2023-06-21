@@ -1,16 +1,14 @@
 package ca.blutopia.removehud.config;
 
-import ca.blutopia.removehud.config.OriginPoint;
 import me.shedaniel.autoconfig.annotation.Config;
-import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
-import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 
 @Config(name="removehud")
 public class ModConfig implements ConfigData {
 
+    // region General Settings
     @Comment("If false block outlines will not be visible")
     public boolean highlightBlocks = true;
 
@@ -20,9 +18,10 @@ public class ModConfig implements ConfigData {
     @Comment("If true the hand will be invisible")
     public boolean removeHand = false;
 
-    @ConfigEntry.Category("HUD")
-    public boolean Autosave = true;
+    // endregion
 
+    // region Uneditable
+        // TODO: MAKE THESE EDITABLE
     @ConfigEntry.Category("HUD")
     public boolean ChatHud = true;
 
@@ -33,36 +32,111 @@ public class ModConfig implements ConfigData {
     public boolean DebugHud = true;
 
     @ConfigEntry.Category("HUD")
-    public boolean ScoreBoard = true;
-
-    @ConfigEntry.Category("Overlays")
-    public boolean StatusEffectOverlay = true;
-
-    @ConfigEntry.Category("HUD")
     public boolean SpectatorHud = true;
 
     @ConfigEntry.Category("HUD")
     public boolean SpectatorMenu = true;
 
-    @ConfigEntry.Category("HUD")
-    public boolean HeldItemTooltip = true;
+    // endregion
+
+    // region Autosave
+    @ConfigEntry.Category("OFFSETS")
+    public OriginPoint AutosaveOrigin = OriginPoint.ORIGIN;
 
     @ConfigEntry.Category("HUD")
-    public boolean MountJumpbar = true;
+    public boolean Autosave = true;
+
+    @ConfigEntry.Category("OFFSETS")
+    public int AutosaveXOffset = 0;
+
+    @ConfigEntry.Category("OFFSETS")
+    public int AutosaveYOffset = 0;
+
+    // endregion
+
+    // region Scoreboard
+    @ConfigEntry.Category("OFFSETS")
+    public OriginPoint ScoreboardOrigin = OriginPoint.ORIGIN;
 
     @ConfigEntry.Category("HUD")
-    public boolean MountHealth = true;
+    public boolean Scoreboard = true;
+
+    @ConfigEntry.Category("OFFSETS")
+    public int ScoreboardXOffset = 0;
+
+    @ConfigEntry.Category("OFFSETS")
+    public int ScoreboardYOffset = 0;
+
+    // endregion
+
+    // region Itemtootip
+    @ConfigEntry.Category("OFFSETS")
+    public OriginPoint ItemtootipOrigin = OriginPoint.ORIGIN;
 
     @ConfigEntry.Category("HUD")
-    public boolean BossBar = true;
+    public boolean Itemtooltip = true;
 
+    @ConfigEntry.Category("OFFSETS")
+    public int ItemtooltipXOffset = 0;
+
+    @ConfigEntry.Category("OFFSETS")
+    public int ItemtooltipYOffset = 0;
+
+    // endregion
+
+    // region Mountjumpbar
+    @ConfigEntry.Category("OFFSETS")
+    public OriginPoint MountjumpbarOrigin = OriginPoint.ORIGIN;
+
+    @ConfigEntry.Category("HUD")
+    public boolean Mountjumpbar = true;
+
+    @ConfigEntry.Category("OFFSETS")
+    public int MountjumpbarXOffset = 0;
+
+    @ConfigEntry.Category("OFFSETS")
+    public int MountjumpbarYOffset = 0;
+
+    // endregion
+
+    // region Mounthealth
+    @ConfigEntry.Category("OFFSETS")
+    public OriginPoint MounthealthOrigin = OriginPoint.ORIGIN;
+
+    @ConfigEntry.Category("HUD")
+    public boolean Mounthealth = true;
+
+    @ConfigEntry.Category("OFFSETS")
+    public int MounthealthXOffset = 0;
+
+    @ConfigEntry.Category("OFFSETS")
+    public int MounthealthYOffset = 0;
+
+    // endregion
+
+    // region Bossbar
+    @ConfigEntry.Category("OFFSETS")
+    public OriginPoint BossbarOrigin = OriginPoint.ORIGIN;
+
+    @ConfigEntry.Category("HUD")
+    public boolean Bossbar = true;
+
+    @ConfigEntry.Category("OFFSETS")
+    public int BossbarXOffset = 0;
+
+    @ConfigEntry.Category("OFFSETS")
+    public int BossbarYOffset = 0;
+
+    // endregion
+
+    // region Hp
     @ConfigEntry.Category("HUD")
     @Comment("Health hearts")
-    public boolean HpBar = true;
+    public boolean Hp = true;
 
     @ConfigEntry.Category("OFFSETS")
     @Comment("HP bar origin point")
-    public OriginPoint HpBarOrigin = OriginPoint.ORIGIN;
+    public OriginPoint HpOrigin = OriginPoint.ORIGIN;
 
     @ConfigEntry.Category("OFFSETS")
     @Comment("HP bar X offset")
@@ -72,38 +146,36 @@ public class ModConfig implements ConfigData {
     @ConfigEntry.Category("OFFSETS")
     @Comment("HP bar Y offset")
     public int HpYOffset = 0;
-//
-//    @ConfigEntry.Category("OFFSETS")
-//    @Comment("Armor bar origin point")
-//    public OriginPoint ArmorBarOrigin = OriginPoint.ORIGIN;
+
+    // endregion
+
+    // region Armor
+    @ConfigEntry.Category("OFFSETS")
+    @Comment("Armor bar origin point")
+    public OriginPoint ArmorOrigin = OriginPoint.ORIGIN;
 
     @ConfigEntry.Category("HUD")
     @Comment("Armor points")
-    public boolean ArmorBar = true;
+    public boolean Armor = true;
 
     @ConfigEntry.Category("OFFSETS")
     @Comment("Armor bar X offset")
     public int ArmorXOffset = 0;
 
-    public void setArmorXOffset(int armorXOffset) {
-        ArmorXOffset += armorXOffset;
-    }
-
-    public void setArmorYOffset(int armorYOffset) {
-        ArmorYOffset += armorYOffset;
-    }
-
     @ConfigEntry.Category("OFFSETS")
     @Comment("Armor bar Y offset")
     public int ArmorYOffset = 0;
 
-//    @ConfigEntry.Category("OFFSETS")
-//    @Comment("Oxygen bar origin point")
-//    public OriginPoint AirBarOrigin = OriginPoint.ORIGIN;
+    // endregion
+
+    // region Air
+    @ConfigEntry.Category("OFFSETS")
+    @Comment("Oxygen bar origin point")
+    public OriginPoint AirOrigin = OriginPoint.ORIGIN;
 
     @ConfigEntry.Category("HUD")
     @Comment("Oxygen bar")
-    public boolean AirBar = true;
+    public boolean Air = true;
 
     @ConfigEntry.Category("OFFSETS")
     @Comment("Air bar X offset")
@@ -113,21 +185,16 @@ public class ModConfig implements ConfigData {
     @Comment("Air bar Y offset")
     public int AirYOffset = 0;
 
-    public void setAirXOffset(int airXOffset) {
-        AirXOffset += airXOffset;
-    }
+    // endregion
 
-    public void setAirYOffset(int airYOffset) {
-        AirYOffset += airYOffset;
-    }
-
-    //    @ConfigEntry.Category("OFFSETS")
-//    @Comment("Hunger bar origin point")
-//    public OriginPoint FoodBarOrigin = OriginPoint.ORIGIN;
+    // region Food
+    @ConfigEntry.Category("OFFSETS")
+    @Comment("Hunger bar origin point")
+    public OriginPoint FoodOrigin = OriginPoint.ORIGIN;
 
     @ConfigEntry.Category("HUD")
     @Comment("Hunger bar")
-    public boolean HungerBar = true;
+    public boolean Food = true;
 
     @ConfigEntry.Category("OFFSETS")
     @Comment("Hunger bar X offset")
@@ -137,14 +204,56 @@ public class ModConfig implements ConfigData {
     @Comment("Hunger bar Y offset")
     public int FoodYOffset = 0;
 
-    public void setFoodXOffset(int foodXOffset) {
-        FoodXOffset += foodXOffset;
-    }
+    // endregion
 
-    public void setFoodYOffset(int foodYOffset) {
-        FoodYOffset += foodYOffset;
-    }
+    // region HotBar
+    @ConfigEntry.Category("OFFSETS")
+    public OriginPoint HotBarOrigin = OriginPoint.ORIGIN;
 
+    @ConfigEntry.Category("HUD")
+    public boolean HotBar = true;
+
+    @ConfigEntry.Category("OFFSETS")
+    public int HotBarXOffset = 0;
+
+    @ConfigEntry.Category("OFFSETS")
+    public int HotBarYOffset = 0;
+
+    // endregion
+
+    // region Expbar
+    @ConfigEntry.Category("OFFSETS")
+    public OriginPoint ExpbarOrigin = OriginPoint.ORIGIN;
+
+    @ConfigEntry.Category("HUD")
+    public boolean Expbar = true;
+
+    @ConfigEntry.Category("OFFSETS")
+    public int ExpbarXOffset = 0;
+
+    @ConfigEntry.Category("OFFSETS")
+    public int ExpbarYOffset = 0;
+
+    // endregion
+
+    // region Crosshairs
+    @ConfigEntry.Category("OFFSETS")
+    public OriginPoint CrosshairsOrigin = OriginPoint.ORIGIN;
+
+    @ConfigEntry.Category("HUD")
+    public boolean Crosshairs = true;
+
+    @ConfigEntry.Category("OFFSETS")
+    public int CrosshairsXOffset = 0;
+
+    @ConfigEntry.Category("OFFSETS")
+    public int CrosshairsYOffset = 0;
+
+    // endregion
+
+    // region Overlays
+    @ConfigEntry.Category("Overlays")
+    public boolean StatusEffectOverlay = true;
     @ConfigEntry.Category("Overlays")
     public boolean SpyglassOverlay = true;
 
@@ -158,19 +267,16 @@ public class ModConfig implements ConfigData {
     @ConfigEntry.Category("Overlays")
     public boolean Vignette = true;
 
-    @ConfigEntry.Category("HUD")
-    public boolean ExpBar = true;
+    // endregion
 
-    @ConfigEntry.Category("HUD")
-    public boolean Crosshairs = true;
-
-    @ConfigEntry.Category("HUD")
-    public boolean HotBar = true;
-
+    // region Editor Settings
+    @ConfigEntry.Category("Editor")
+    public boolean EnableEditor = false;
     @ConfigEntry.Category("Editor")
     public boolean OffsetSnapping = true;
     @ConfigEntry.Category("Editor")
     public int OffsetSnappingStrength = 5;
 
+    // endregion
 
 }

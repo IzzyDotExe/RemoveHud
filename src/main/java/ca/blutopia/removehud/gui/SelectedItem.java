@@ -17,49 +17,42 @@ public class SelectedItem {
         _selected = def;
     }
 
-    private String getSelectedName() {
-        return _selected.name();
+    public HUDItems getSelected() {
+        return _selected;
     }
 
+    public void setSelected(HUDItems _selected) {
+        this._selected = _selected;
+    }
 
     public void MoveX(int offset) throws NoSuchMethodException {
-
-        var setMethod = HUDManager.class.getMethod("set"+getSelectedName()+"XOffset", int.class);
-
         try {
-            setMethod.invoke(HUD_MANAGER, offset);
-        } catch (IllegalAccessException | InvocationTargetException e) {
+            HUD_MANAGER.setElementXOffset(_selected, offset);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     public void MoveY(int offset) throws NoSuchMethodException {
-
-        var setMethod = HUDManager.class.getMethod("set"+getSelectedName()+"YOffset", int.class);
-
         try {
-            setMethod.invoke(HUD_MANAGER, offset);
-        } catch (IllegalAccessException | InvocationTargetException e) {
+            HUD_MANAGER.setElementYOffset(_selected, offset);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
     }
 
     public void setOrigin(OriginPoint origin) throws NoSuchMethodException {
-        var setMethod = HUDManager.class.getMethod("set"+getSelectedName()+"Origin", OriginPoint.class);
         try {
-            setMethod.invoke(HUD_MANAGER, origin);
-        } catch (IllegalAccessException | InvocationTargetException e) {
+            HUD_MANAGER.setElementOrigin(_selected, origin);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
     }
 
     public OriginPoint getOrigin() throws NoSuchMethodException {
-        var getMethod = HUDManager.class.getMethod("get"+getSelectedName()+"Origin");
         try {
-           var origin = getMethod.invoke(HUD_MANAGER);
-           return (OriginPoint)origin;
-        } catch (IllegalAccessException | InvocationTargetException e) {
+            return HUD_MANAGER.getElementOrigin(_selected);
+        } catch (IllegalAccessException | NoSuchFieldException e) {
             throw new RuntimeException(e);
         }
     }

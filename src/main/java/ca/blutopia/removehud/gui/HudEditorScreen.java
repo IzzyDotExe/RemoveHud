@@ -1,5 +1,7 @@
 package ca.blutopia.removehud.gui;
 
+import ca.blutopia.removehud.HUDManager;
+import ca.blutopia.removehud.RemoveHud;
 import ca.blutopia.removehud.config.HUDItems;
 import ca.blutopia.removehud.config.OriginPoint;
 import net.minecraft.client.MinecraftClient;
@@ -19,7 +21,8 @@ public class HudEditorScreen extends Screen {
     ButtonWidget moveRightButton;
     ButtonWidget moveUpButton;
     ButtonWidget moveDownButton;
-
+    CyclingButtonWidget<OriginPoint> widg;
+    CyclingButtonWidget<HUDItems> wid2;
     long _windowHandle;
 
     private SelectedItem _selected;
@@ -27,6 +30,8 @@ public class HudEditorScreen extends Screen {
     public HudEditorScreen() {
 
         super(Text.of("HUD editor"));
+
+        RemoveHud.HudManagerInstance.ConfigInstance.EnableEditor = true;
 
         assert this.client != null;
 
@@ -41,24 +46,62 @@ public class HudEditorScreen extends Screen {
 
         moveRightButton = ButtonWidget.builder(Text.of(">"), this::MoveSelectedItemRight)
                 .dimensions(
-                        20, 20,
+                        20, 0,
                         20, 20
                 )
                 .build();
 
         moveUpButton = ButtonWidget.builder(Text.of("^"), this::MoveSelectedItemUp)
                 .dimensions(
-                        width/2-20-30, height/2-20,
+                        40, 0,
                         20, 20
                 )
                 .build();
 
         moveDownButton = ButtonWidget.builder(Text.of("v"), this::MoveSelectedItemDown)
                 .dimensions(
-                        width/2-20-30, height/2-20,
+                        60, 0,
                         20, 20
                 )
                 .build();
+
+        try {
+            widg = new CyclingButtonWidget.Builder<OriginPoint>(x -> {
+                return switch (x) {
+
+                    case ORIGIN -> Text.of("origin");
+                    case TOPLEFT -> Text.of("topleft");
+                    case BOTTOMLEFFT -> Text.of("bottomleft");
+                    case TOPRIGHT -> Text.of("topright");
+                    case BOTTONRIGHT -> Text.of("bottomright");
+                };
+            }).initially(_selected.getOrigin())
+                    .values(OriginPoint.values())
+                    .build(20, 30, 120, 20, Text.of("Origin"), (sender, value) -> {
+                        try {
+                            _selected.setOrigin(value);
+                        } catch (NoSuchMethodException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        wid2 = new CyclingButtonWidget.Builder<HUDItems>(x->{
+            return Text.of(x.name());
+        }).initially(_selected.getSelected())
+                .values(HUDItems.values())
+                .build(20, 80, 120, 20, Text.of("Hud Item"), (sender,value) -> {
+                    _selected.setSelected(value);
+                    try {
+                        widg.setValue(_selected.getOrigin());
+                    } catch (NoSuchMethodException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+
 
         _windowHandle = MinecraftClient.getInstance().getWindow().getHandle();
 
@@ -101,32 +144,23 @@ public class HudEditorScreen extends Screen {
         super.init();
         addDrawableChild(moveLeftButton);
         addDrawableChild(moveRightButton);
-//        addDrawableChild(moveDownButton);
-//        addDrawableChild(moveUpButton);
-        CyclingButtonWidget<OriginPoint> widg = null;
-        try {
-            widg = new CyclingButtonWidget.Builder<OriginPoint>(x -> {
-                return switch (x) {
+        addDrawableChild(moveDownButton);
+        addDrawableChild(moveUpButton);
 
-                    case ORIGIN -> Text.of("origin");
-                    case TOPLEFT -> Text.of("topleft");
-                    case BOTTOMLEFFT -> Text.of("bottomleft");
-                    case TOPRIGHT -> Text.of("topright");
-                    case BOTTONRIGHT -> Text.of("bottomright");
-                };
-            }).initially(_selected.getOrigin())
-                    .values(OriginPoint.values())
-                    .build(20, 30, 120, 20, Text.of("Origin"), (sender, value) -> {
-                        try {
-                            _selected.setOrigin(value);
-                        } catch (NoSuchMethodException e) {
-                            throw new RuntimeException(e);
-                        }
-                    });
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        }
         addDrawableChild(widg);
+        addDrawableChild(wid2);
+    }
+
+    @Override
+    public boolean shouldCloseOnEsc() {
+        RemoveHud.HudManagerInstance.ConfigInstance.EnableEditor = false;
+        return super.shouldCloseOnEsc();
+    }
+
+    @Override
+    public void close() {
+        RemoveHud.HudManagerInstance.ConfigInstance.EnableEditor = false;
+        super.close();
     }
 
     @Override
@@ -190,4 +224,6 @@ public class HudEditorScreen extends Screen {
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         super.render(context, mouseX, mouseY, delta);
     }
+
+
 }
