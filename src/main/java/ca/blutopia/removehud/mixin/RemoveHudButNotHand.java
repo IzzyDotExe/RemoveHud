@@ -130,67 +130,67 @@ public abstract class RemoveHudButNotHand {
         }
     }
 
-    @Redirect(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTexture(Lnet/minecraft/util/Identifier;IIIIII)V", ordinal = 0))
-    private void inj(DrawContext instance, Identifier texture, int x, int y, int u, int v, int width, int height) {
+    @Redirect(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawGuiTexture(Lnet/minecraft/util/Identifier;IIII)V", ordinal = 0))
+    private void inj(DrawContext instance, Identifier texture, int x, int y, int width, int height) {
 
         if (ModConfig.INSTANCE.ArmorBar) {
-            instance.drawTexture(texture, x + ModConfig.INSTANCE.ArmorXOffset, y + ModConfig.INSTANCE.ArmorYOffset, u, v, width, height);
+            instance.drawGuiTexture(texture, x + ModConfig.INSTANCE.ArmorXOffset, y + ModConfig.INSTANCE.ArmorYOffset, width, height);
         }
     }
 
-    @Redirect(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTexture(Lnet/minecraft/util/Identifier;IIIIII)V", ordinal = 1))
-    private void inj1(DrawContext instance, Identifier texture, int x, int y, int u, int v, int width, int height) {
+    @Redirect(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawGuiTexture(Lnet/minecraft/util/Identifier;IIII)V", ordinal = 1))
+    private void inj1(DrawContext instance, Identifier texture, int x, int y, int width, int height) {
 
         if (ModConfig.INSTANCE.ArmorBar) {
-            instance.drawTexture(texture, x + ModConfig.INSTANCE.ArmorXOffset, y + ModConfig.INSTANCE.ArmorYOffset, u, v, width, height);
+            instance.drawGuiTexture(texture, x + ModConfig.INSTANCE.ArmorXOffset, y + ModConfig.INSTANCE.ArmorYOffset, width, height);
         }
     }
 
-    @Redirect(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTexture(Lnet/minecraft/util/Identifier;IIIIII)V", ordinal = 2))
-    private void inj2(DrawContext instance, Identifier texture, int x, int y, int u, int v, int width, int height) {
+    @Redirect(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawGuiTexture(Lnet/minecraft/util/Identifier;IIII)V", ordinal = 2))
+    private void inj2(DrawContext instance, Identifier texture, int x, int y, int width, int height) {
 
         if (ModConfig.INSTANCE.ArmorBar) {
-            instance.drawTexture(texture, x + ModConfig.INSTANCE.ArmorXOffset, y + ModConfig.INSTANCE.ArmorYOffset, u, v, width, height);
+            instance.drawGuiTexture(texture, x + ModConfig.INSTANCE.ArmorXOffset, y + ModConfig.INSTANCE.ArmorYOffset, width, height);
         }
     }
 
 
-    @Redirect(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTexture(Lnet/minecraft/util/Identifier;IIIIII)V", ordinal = 3))
-    private void inj3(DrawContext instance, Identifier texture, int x, int y, int u, int v, int width, int height) {
+    @Redirect(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawGuiTexture(Lnet/minecraft/util/Identifier;IIII)V", ordinal = 3))
+    private void inj3(DrawContext instance, Identifier texture, int x, int y, int width, int height) {
 
         if (ModConfig.INSTANCE.HungerBar) {
-            instance.drawTexture(texture, x + ModConfig.INSTANCE.FoodXOffset, y + ModConfig.INSTANCE.FoodYOffset, u, v, width, height);
+            instance.drawGuiTexture(texture, x + ModConfig.INSTANCE.FoodXOffset, y + ModConfig.INSTANCE.FoodYOffset, width, height);
         }
     }
 
-    @Redirect(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTexture(Lnet/minecraft/util/Identifier;IIIIII)V", ordinal = 4))
-    private void inj4(DrawContext instance, Identifier texture, int x, int y, int u, int v, int width, int height) {
+    @Redirect(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawGuiTexture(Lnet/minecraft/util/Identifier;IIII)V", ordinal = 4))
+    private void inj4(DrawContext instance, Identifier texture, int x, int y, int width, int height) {
 
         if (ModConfig.INSTANCE.HungerBar) {
-            instance.drawTexture(texture, x + ModConfig.INSTANCE.FoodXOffset, y + ModConfig.INSTANCE.FoodYOffset, u, v, width, height);
+            instance.drawGuiTexture(texture, x + ModConfig.INSTANCE.FoodXOffset, y + ModConfig.INSTANCE.FoodYOffset, width, height);
         }
     }
 
-    @Redirect(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTexture(Lnet/minecraft/util/Identifier;IIIIII)V", ordinal = 5))
-    private void inj5(DrawContext instance, Identifier texture, int x, int y, int u, int v, int width, int height) {
+    @Redirect(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawGuiTexture(Lnet/minecraft/util/Identifier;IIII)V", ordinal = 5))
+    private void inj5(DrawContext instance, Identifier texture, int x, int y, int width, int height) {
 
         if (ModConfig.INSTANCE.HungerBar) {
-            instance.drawTexture(texture, x + ModConfig.INSTANCE.FoodXOffset, y + ModConfig.INSTANCE.FoodYOffset, u, v, width, height);
+            instance.drawGuiTexture(texture, x + ModConfig.INSTANCE.FoodXOffset, y + ModConfig.INSTANCE.FoodYOffset, width, height);
         }
     }
 
-    @Redirect(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTexture(Lnet/minecraft/util/Identifier;IIIIII)V", ordinal = 6))
-    private void inj6(DrawContext instance, Identifier texture, int x, int y, int u, int v, int width, int height) {
+    @Redirect(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawGuiTexture(Lnet/minecraft/util/Identifier;IIII)V", ordinal = 6))
+    private void inj6(DrawContext instance, Identifier texture, int x, int y, int width, int height) {
 
         if (ModConfig.INSTANCE.AirBar) {
-            instance.drawTexture(texture, x + ModConfig.INSTANCE.AirXOffset, y + ModConfig.INSTANCE.AirYOffset, u, v, width, height);
+            instance.drawGuiTexture(texture, x + ModConfig.INSTANCE.AirXOffset, y + ModConfig.INSTANCE.AirYOffset, width, height);
         }
     }
-    @Redirect(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTexture(Lnet/minecraft/util/Identifier;IIIIII)V", ordinal = 7))
-    private void inj7(DrawContext instance, Identifier texture, int x, int y, int u, int v, int width, int height) {
+    @Redirect(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawGuiTexture(Lnet/minecraft/util/Identifier;IIII)V", ordinal = 7))
+    private void inj7(DrawContext instance, Identifier texture, int x, int y, int width, int height) {
 
         if (ModConfig.INSTANCE.AirBar) {
-            instance.drawTexture(texture, x + ModConfig.INSTANCE.AirXOffset, y + ModConfig.INSTANCE.AirYOffset, u, v, width, height);
+            instance.drawGuiTexture(texture, x + ModConfig.INSTANCE.AirXOffset, y + ModConfig.INSTANCE.AirYOffset, width, height);
         }
 
     }
