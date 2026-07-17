@@ -16,7 +16,8 @@
     "RemoveExperienceBar",
     "RemoveExperienceLevel",
     "RemoveJumpableVehicleBar",
-    "RemoveLocatorBar"
+    "RemoveLocatorBar",
+    "HudEditorOverlay"
   ],
   "injectors": {
     "defaultRequire": 1

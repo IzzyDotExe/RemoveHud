@@ -1,5 +1,6 @@
 package ca.blutopia.removehud.mixin;
 
+import ca.blutopia.removehud.HudEditorState;
 import ca.blutopia.removehud.ModConfig;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -24,8 +25,12 @@ public abstract class RemoveHudButNotHand {
             ci.cancel();
             return;
         }
+        int vanillaX = graphics.guiWidth() / 2 - 91;
+        int vanillaY = graphics.guiHeight() - 22;
+        int targetX = ModConfig.INSTANCE.HotBarOrigin.resolveX(vanillaX, 182);
+        int targetY = ModConfig.INSTANCE.HotBarOrigin.resolveY(vanillaY, 22);
         graphics.pose().pushMatrix();
-        graphics.pose().translate((float) ModConfig.INSTANCE.HotBarXOffset, (float) ModConfig.INSTANCE.HotBarYOffset);
+        graphics.pose().translate((float) (targetX - vanillaX + ModConfig.INSTANCE.HotBarXOffset), (float) (targetY - vanillaY + ModConfig.INSTANCE.HotBarYOffset));
     }
 
     @Inject(method = "extractItemHotbar(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V", at = @At("RETURN"))
@@ -99,7 +104,7 @@ public abstract class RemoveHudButNotHand {
                     target = "Lnet/minecraft/client/gui/Hud;extractHearts(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/world/entity/player/Player;IIIIFIIIZ)V"),
             index = 2)
     private int modifyHealthBarX(int value) {
-        return value + ModConfig.INSTANCE.HpXOffset;
+        return ModConfig.INSTANCE.HpOrigin.resolveX(value, 81) + ModConfig.INSTANCE.HpXOffset;
     }
 
     @ModifyArg(
@@ -109,7 +114,7 @@ public abstract class RemoveHudButNotHand {
                     target = "Lnet/minecraft/client/gui/Hud;extractHearts(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/world/entity/player/Player;IIIIFIIIZ)V"),
             index = 3)
     private int modifyHealthBarY(int value) {
-        return value + ModConfig.INSTANCE.HpYOffset;
+        return ModConfig.INSTANCE.HpOrigin.resolveY(value, 9) + ModConfig.INSTANCE.HpYOffset;
     }
 
     @Inject(method = "extractArmor(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/world/entity/player/Player;IIII)V", at = @At("HEAD"), cancellable = true)
@@ -126,7 +131,10 @@ public abstract class RemoveHudButNotHand {
                     target = "Lnet/minecraft/client/gui/Hud;extractArmor(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/world/entity/player/Player;IIII)V"),
             index = 2)
     private static int modifyArmorBarY(int value) {
-        return value + ModConfig.INSTANCE.ArmorYOffset;
+        // extractArmor subtracts a further 10px (single-row case) from whatever we return here
+        // before drawing, so anchor against that true rendered position and add it back.
+        int targetTrueY = ModConfig.INSTANCE.ArmorOrigin.resolveY(value - 10, 9);
+        return targetTrueY + 10 + ModConfig.INSTANCE.ArmorYOffset;
     }
 
     @ModifyArg(
@@ -136,7 +144,7 @@ public abstract class RemoveHudButNotHand {
                     target = "Lnet/minecraft/client/gui/Hud;extractArmor(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/world/entity/player/Player;IIII)V"),
             index = 5)
     private static int modifyArmorBarX(int value) {
-        return value + ModConfig.INSTANCE.ArmorXOffset;
+        return ModConfig.INSTANCE.ArmorOrigin.resolveX(value, 81) + ModConfig.INSTANCE.ArmorXOffset;
     }
 
     @Inject(method = "extractFood(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/world/entity/player/Player;II)V", at = @At("HEAD"), cancellable = true)
@@ -153,7 +161,7 @@ public abstract class RemoveHudButNotHand {
                     target = "Lnet/minecraft/client/gui/Hud;extractFood(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/world/entity/player/Player;II)V"),
             index = 2)
     private int modifyFoodBarY(int value) {
-        return value + ModConfig.INSTANCE.FoodYOffset;
+        return ModConfig.INSTANCE.FoodOrigin.resolveY(value, 9) + ModConfig.INSTANCE.FoodYOffset;
     }
 
     @ModifyArg(
@@ -163,7 +171,9 @@ public abstract class RemoveHudButNotHand {
                     target = "Lnet/minecraft/client/gui/Hud;extractFood(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/world/entity/player/Player;II)V"),
             index = 3)
     private int modifyFoodBarX(int value) {
-        return value + ModConfig.INSTANCE.FoodXOffset;
+        // value is xRight (right-referenced); convert to the left edge to anchor, then back.
+        int targetLeftX = ModConfig.INSTANCE.FoodOrigin.resolveX(value - 81, 81);
+        return targetLeftX + 81 + ModConfig.INSTANCE.FoodXOffset;
     }
 
     @Inject(method = "extractAirBubbles(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/world/entity/player/Player;III)V", at = @At("HEAD"), cancellable = true)
@@ -180,7 +190,10 @@ public abstract class RemoveHudButNotHand {
                     target = "Lnet/minecraft/client/gui/Hud;extractAirBubbles(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/world/entity/player/Player;III)V"),
             index = 3)
     private int modifyAirBubblesY(int value) {
-        return value + ModConfig.INSTANCE.AirYOffset;
+        // extractAirBubbles adds a further 10px (no-vehicle case) to whatever we return here
+        // before drawing, so anchor against that true rendered position and subtract it back.
+        int targetTrueY = ModConfig.INSTANCE.AirOrigin.resolveY(value + 10, 9);
+        return targetTrueY - 10 + ModConfig.INSTANCE.AirYOffset;
     }
 
     @ModifyArg(
@@ -190,7 +203,9 @@ public abstract class RemoveHudButNotHand {
                     target = "Lnet/minecraft/client/gui/Hud;extractAirBubbles(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/world/entity/player/Player;III)V"),
             index = 4)
     private int modifyAirBubblesX(int value) {
-        return value + ModConfig.INSTANCE.AirXOffset;
+        // value is xRight (right-referenced); convert to the left edge to anchor, then back.
+        int targetLeftX = ModConfig.INSTANCE.AirOrigin.resolveX(value - 81, 81);
+        return targetLeftX + 81 + ModConfig.INSTANCE.AirXOffset;
     }
 
     // ---- Mount / vehicle health ----
@@ -210,8 +225,12 @@ public abstract class RemoveHudButNotHand {
             ci.cancel();
             return;
         }
+        int vanillaX = graphics.guiWidth() / 2 - 60;
+        int vanillaY = graphics.guiHeight() - 59;
+        int targetX = ModConfig.INSTANCE.HeldItemTooltipOrigin.resolveX(vanillaX, 120);
+        int targetY = ModConfig.INSTANCE.HeldItemTooltipOrigin.resolveY(vanillaY, 12);
         graphics.pose().pushMatrix();
-        graphics.pose().translate((float) ModConfig.INSTANCE.HeldItemTooltipXOffset, (float) ModConfig.INSTANCE.HeldItemTooltipYOffset);
+        graphics.pose().translate((float) (targetX - vanillaX + ModConfig.INSTANCE.HeldItemTooltipXOffset), (float) (targetY - vanillaY + ModConfig.INSTANCE.HeldItemTooltipYOffset));
     }
 
     @Inject(method = "extractSelectedItemName(Lnet/minecraft/client/gui/GuiGraphicsExtractor;)V", at = @At("RETURN"))
@@ -243,7 +262,8 @@ public abstract class RemoveHudButNotHand {
 
     @Inject(method = "extractTabList(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V", at = @At("HEAD"), cancellable = true)
     public void renderPlayerList(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker, CallbackInfo ci) {
-        if (!ModConfig.INSTANCE.PlayerList) {
+        // Tab also cycles the HUD editor's selected element, so don't let it pop the vanilla player list too.
+        if (!ModConfig.INSTANCE.PlayerList || HudEditorState.active) {
             ci.cancel();
         }
     }
@@ -274,8 +294,12 @@ public abstract class RemoveHudButNotHand {
             ci.cancel();
             return;
         }
+        int vanillaX = graphics.guiWidth() / 2 - 60;
+        int vanillaY = graphics.guiHeight() - 72;
+        int targetX = ModConfig.INSTANCE.OverlayMessageOrigin.resolveX(vanillaX, 120);
+        int targetY = ModConfig.INSTANCE.OverlayMessageOrigin.resolveY(vanillaY, 12);
         graphics.pose().pushMatrix();
-        graphics.pose().translate((float) ModConfig.INSTANCE.OverlayMessageXOffset, (float) ModConfig.INSTANCE.OverlayMessageYOffset);
+        graphics.pose().translate((float) (targetX - vanillaX + ModConfig.INSTANCE.OverlayMessageXOffset), (float) (targetY - vanillaY + ModConfig.INSTANCE.OverlayMessageYOffset));
     }
 
     @Inject(method = "extractOverlayMessage(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V", at = @At("RETURN"))

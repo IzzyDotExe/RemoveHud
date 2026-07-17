@@ -29,5 +29,14 @@
   "text.autoconfig.removehud.option.OtherOverlays": "Autre",
   "key.category.removehud.removehud": "Remove Hud but not Hand",
   "key.removehud.open_settings": "Ouvrir les paramètres",
-  "key.removehud.toggle_mod": "Basculer le HUD" 
+  "key.removehud.toggle_mod": "Basculer le HUD",
+  "key.removehud.toggle_editor": "Basculer l'éditeur de HUD",
+  "key.removehud.cycle": "Éditeur de HUD : élément suivant (Shift = ancrage suivant)",
+  "key.removehud.toggle_snapping": "Éditeur de HUD : basculer l'alignement automatique",
+  "key.removehud.reset_element": "Éditeur de HUD : réinitialiser l'élément",
+  "key.removehud.toggle_controls_hint": "Éditeur de HUD : afficher/masquer l'aide",
+  "key.removehud.nudge_up": "Éditeur de HUD : déplacer vers le haut",
+  "key.removehud.nudge_down": "Éditeur de HUD : déplacer vers le bas",
+  "key.removehud.nudge_left": "Éditeur de HUD : déplacer vers la gauche",
+  "key.removehud.nudge_right": "Éditeur de HUD : déplacer vers la droite"
 }

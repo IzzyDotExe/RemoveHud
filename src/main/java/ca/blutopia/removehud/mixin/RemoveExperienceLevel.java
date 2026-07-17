@@ -18,8 +18,12 @@ public interface RemoveExperienceLevel {
             ci.cancel();
             return;
         }
+        int vanillaX = graphics.guiWidth() / 2 - 91;
+        int vanillaY = graphics.guiHeight() - 29;
+        int targetX = ModConfig.INSTANCE.ExpBarOrigin.resolveX(vanillaX, 182);
+        int targetY = ModConfig.INSTANCE.ExpBarOrigin.resolveY(vanillaY, 5);
         graphics.pose().pushMatrix();
-        graphics.pose().translate((float) ModConfig.INSTANCE.ExpBarXOffset, (float) ModConfig.INSTANCE.ExpBarYOffset);
+        graphics.pose().translate((float) (targetX - vanillaX + ModConfig.INSTANCE.ExpBarXOffset), (float) (targetY - vanillaY + ModConfig.INSTANCE.ExpBarYOffset));
     }
 
     @Inject(method = "extractExperienceLevel(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/gui/Font;I)V", at = @At("RETURN"))
