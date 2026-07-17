@@ -2,7 +2,7 @@
   "required": true,
   "minVersion": "0.8",
   "package": "ca.blutopia.removehud.mixin",
-  "compatibilityLevel": "JAVA_16",
+  "compatibilityLevel": "JAVA_25",
   "mixins": [
 
   ],
@@ -11,7 +11,12 @@
     "RemoveHudButNotHand",
     "RemoveBlockOutline",
     "RemoveBossBar",
-    "RemoveDebugHud"
+    "RemoveDebugHud",
+    "RemoveSpectatorHud",
+    "RemoveExperienceBar",
+    "RemoveExperienceLevel",
+    "RemoveJumpableVehicleBar",
+    "RemoveLocatorBar"
   ],
   "injectors": {
     "defaultRequire": 1

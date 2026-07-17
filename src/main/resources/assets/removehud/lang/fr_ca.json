@@ -15,6 +15,7 @@
   "text.autoconfig.removehud.option.SpectatorMenu": "Menu de spectateurs",
   "text.autoconfig.removehud.option.HeldItemTooltip": "Tooltip d'itèm",
   "text.autoconfig.removehud.option.MountJumpbar": "Saût de Cheval",
+  "text.autoconfig.removehud.option.LocatorBar": "Barre de localisation",
   "text.autoconfig.removehud.option.MountHealth": "Vie du Cheval",
   "text.autoconfig.removehud.option.BossBar": "Vie du Boss",
   "text.autoconfig.removehud.option.StatusBars": "Status",
@@ -26,7 +27,7 @@
   "text.autoconfig.removehud.option.PortalOverlay": "Portail",
   "text.autoconfig.removehud.option.Vignette": "Vignette",
   "text.autoconfig.removehud.option.OtherOverlays": "Autre",
-  "key.category.removehud": "Remove Hud but not Hand",
+  "key.category.removehud.removehud": "Remove Hud but not Hand",
   "key.removehud.open_settings": "Ouvrir les paramètres",
   "key.removehud.toggle_mod": "Basculer le HUD" 
 }

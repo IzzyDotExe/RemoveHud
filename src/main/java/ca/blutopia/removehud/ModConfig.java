@@ -68,6 +68,10 @@ public class ModConfig implements ConfigData {
     public boolean MountJumpbar = true;
 
     @ConfigEntry.Category("HUD")
+    @Comment("Waypoint locator bar")
+    public boolean LocatorBar = true;
+
+    @ConfigEntry.Category("HUD")
     public boolean MountHealth = true;
 
     @ConfigEntry.Category("HUD")
