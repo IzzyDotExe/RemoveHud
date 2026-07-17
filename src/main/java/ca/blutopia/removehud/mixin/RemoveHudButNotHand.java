@@ -1,298 +1,320 @@
 package ca.blutopia.removehud.mixin;
 
+import ca.blutopia.removehud.HudEditorState;
 import ca.blutopia.removehud.ModConfig;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.hud.*;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.JumpingMount;
-import net.minecraft.entity.player.HungerManager;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.scoreboard.Scoreboard;
-import net.minecraft.scoreboard.ScoreboardObjective;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.Hud;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-
-@Mixin(InGameHud.class)
+@Mixin(Hud.class)
 public abstract class RemoveHudButNotHand {
 
-    @Shadow protected abstract void renderVignetteOverlay(DrawContext context, Entity entity);
+    // ---- Hotbar (background, selection, offhand slot and items move together) ----
 
-    @Shadow protected abstract void renderOverlay(DrawContext context, Identifier texture, float opacity);
+    @Inject(method = "extractItemHotbar(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V", at = @At("HEAD"), cancellable = true)
+    private void renderHotBar(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker, CallbackInfo ci) {
+        if (!ModConfig.INSTANCE.HotBar) {
+            ci.cancel();
+            return;
+        }
+        int vanillaX = graphics.guiWidth() / 2 - 91;
+        int vanillaY = graphics.guiHeight() - 22;
+        int targetX = ModConfig.INSTANCE.HotBarOrigin.resolveX(vanillaX, 182);
+        int targetY = ModConfig.INSTANCE.HotBarOrigin.resolveY(vanillaY, 22);
+        graphics.pose().pushMatrix();
+        graphics.pose().translate((float) (targetX - vanillaX + ModConfig.INSTANCE.HotBarXOffset), (float) (targetY - vanillaY + ModConfig.INSTANCE.HotBarYOffset));
+    }
 
-    @Shadow protected abstract void renderHotbar(float tickDelta, DrawContext context);
-
-    @Shadow public abstract void renderExperienceBar(DrawContext context, int x);
-
-    @Shadow protected abstract void renderCrosshair(DrawContext context);
-
-    @Shadow protected abstract void renderPortalOverlay(DrawContext context, float nauseaStrength);
-
-    @Shadow protected abstract void renderSpyglassOverlay(DrawContext context, float scale);
-
-    @Shadow protected abstract void renderStatusBars(DrawContext context);
-
-    @Shadow public abstract void renderMountJumpBar(JumpingMount mount, DrawContext context, int x);
-
-    @Shadow protected abstract void renderMountHealth(DrawContext context);
-
-    @Shadow public abstract void renderHeldItemTooltip(DrawContext context);
-
-    @Shadow protected abstract void renderStatusEffectOverlay(DrawContext context);
-
-    @Shadow protected abstract void renderScoreboardSidebar(DrawContext context, ScoreboardObjective objective);
-
-    @Shadow protected abstract void renderAutosaveIndicator(DrawContext context);
-
-    @Shadow protected abstract void renderHealthBar(DrawContext context, PlayerEntity player, int x, int y, int lines, int regeneratingHeartIndex, float maxHealth, int lastHealth, int health, int absorption, boolean blinking);
-
-    @Shadow private int scaledHeight;
-
-    @Shadow private int scaledWidth;
-
-    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHotbar(FLnet/minecraft/client/gui/DrawContext;)V"))
-    public void renderHotBarMix(InGameHud instance, float tickDelta, DrawContext context) {
+    @Inject(method = "extractItemHotbar(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V", at = @At("RETURN"))
+    private void renderHotBarEnd(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker, CallbackInfo ci) {
         if (ModConfig.INSTANCE.HotBar) {
-            renderHotbar(tickDelta, context);
+            graphics.pose().popMatrix();
         }
     }
 
-    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderCrosshair(Lnet/minecraft/client/gui/DrawContext;)V"))
-    public void renderCrossHairsMix(InGameHud instance, DrawContext context) {
-        if (ModConfig.INSTANCE.Crosshairs) {
-            renderCrosshair(context);
+    // ---- Crosshair ----
+
+    @Inject(method = "extractCrosshair(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V", at = @At("HEAD"), cancellable = true)
+    public void renderCrosshair(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker, CallbackInfo ci) {
+        if (!ModConfig.INSTANCE.Crosshairs) {
+            ci.cancel();
         }
     }
 
-    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderVignetteOverlay(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/entity/Entity;)V"))
-    public void renderVignette(InGameHud instance, DrawContext context, Entity entity) {
-        if (ModConfig.INSTANCE.Vignette) {
-            renderVignetteOverlay(context, entity);
+    // ---- Vignette ----
+
+    @Inject(method = "extractVignette(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/world/entity/Entity;)V", at = @At("HEAD"), cancellable = true)
+    public void renderVignette(GuiGraphicsExtractor graphics, Entity entity, CallbackInfo ci) {
+        if (!ModConfig.INSTANCE.Vignette) {
+            ci.cancel();
         }
     }
 
-    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderOverlay(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/util/Identifier;F)V"))
-    public void renderOverlays(InGameHud instance, DrawContext context, Identifier texture, float opacity) {
-        if (ModConfig.INSTANCE.OtherOverlays) {
-            renderOverlay(context, texture, opacity);
+    // ---- Misc camera overlays (frost, pumpkin, nausea, etc.) ----
+
+    @Inject(method = "extractTextureOverlay(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/resources/Identifier;F)V", at = @At("HEAD"), cancellable = true)
+    public void renderOverlays(GuiGraphicsExtractor graphics, Identifier texture, float opacity, CallbackInfo ci) {
+        if (!ModConfig.INSTANCE.OtherOverlays) {
+            ci.cancel();
         }
     }
 
-    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderPortalOverlay(Lnet/minecraft/client/gui/DrawContext;F)V"))
-    public void renderPortalOverlays(InGameHud instance, DrawContext context, float nauseaStrength) {
-        if (ModConfig.INSTANCE.PortalOverlay) {
-            renderPortalOverlay(context, nauseaStrength);
+    @Inject(method = "extractConfusionOverlay(Lnet/minecraft/client/gui/GuiGraphicsExtractor;F)V", at = @At("HEAD"), cancellable = true)
+    public void renderConfusionOverlay(GuiGraphicsExtractor graphics, float strength, CallbackInfo ci) {
+        if (!ModConfig.INSTANCE.OtherOverlays) {
+            ci.cancel();
         }
     }
 
-    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderSpyglassOverlay(Lnet/minecraft/client/gui/DrawContext;F)V"))
-    public void renderSpyglassOverlays(InGameHud instance, DrawContext context, float scale) {
-        if (ModConfig.INSTANCE.SpyglassOverlay) {
-            renderSpyglassOverlay(context, scale);
+    @Inject(method = "extractPortalOverlay(Lnet/minecraft/client/gui/GuiGraphicsExtractor;F)V", at = @At("HEAD"), cancellable = true)
+    public void renderPortalOverlay(GuiGraphicsExtractor graphics, float nauseaStrength, CallbackInfo ci) {
+        if (!ModConfig.INSTANCE.PortalOverlay) {
+            ci.cancel();
         }
     }
 
-    @Redirect(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHealthBar(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/entity/player/PlayerEntity;IIIIFIIIZ)V"))
-    private void inj(InGameHud instance, DrawContext context, PlayerEntity player, int x, int y, int lines, int regeneratingHeartIndex, float maxHealth, int lastHealth, int health, int absorption, boolean blinking) {
-
-//        switch (ModConfig.INSTANCE.HpBarOrigin) {
-//            case TOPLEFT -> {
-//                x = 0;
-//                y = 0;
-//            }
-//            case TOPRIGHT -> {
-//                x = scaledWidth;
-//                y = 0;
-//            }
-//            case BOTTOMLEFFT -> {
-//                x =0;
-//                y = scaledHeight;
-//            }
-//
-//            case BOTTONRIGHT -> {
-//                x = scaledWidth;
-//                y = scaledHeight;
-//            }
-//            default -> {
-//            }
-//        }
-
-        if (ModConfig.INSTANCE.HpBar) {
-            renderHealthBar(context, player, x + ModConfig.INSTANCE.HpXOffset, y + ModConfig.INSTANCE.HpYOffset, lines, regeneratingHeartIndex, maxHealth, lastHealth, health, absorption, blinking);
+    @Inject(method = "extractSpyglassOverlay(Lnet/minecraft/client/gui/GuiGraphicsExtractor;F)V", at = @At("HEAD"), cancellable = true)
+    public void renderSpyglassOverlay(GuiGraphicsExtractor graphics, float scale, CallbackInfo ci) {
+        if (!ModConfig.INSTANCE.SpyglassOverlay) {
+            ci.cancel();
         }
     }
 
-    @Redirect(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTexture(Lnet/minecraft/util/Identifier;IIIIII)V", ordinal = 0))
-    private void inj(DrawContext instance, Identifier texture, int x, int y, int u, int v, int width, int height) {
+    // ---- Health / armor / food / air (each offset moves that whole element) ----
 
-        if (ModConfig.INSTANCE.ArmorBar) {
-            instance.drawTexture(texture, x + ModConfig.INSTANCE.ArmorXOffset, y + ModConfig.INSTANCE.ArmorYOffset, u, v, width, height);
+    @Inject(method = "extractHearts(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/world/entity/player/Player;IIIIFIIIZ)V", at = @At("HEAD"), cancellable = true)
+    public void renderHealthBar(GuiGraphicsExtractor graphics, Player player, int xLeft, int yLineBase, int healthRowHeight, int heartOffsetIndex, float maxHealth, int currentHealth, int oldHealth, int absorption, boolean blink, CallbackInfo ci) {
+        if (!ModConfig.INSTANCE.HpBar) {
+            ci.cancel();
         }
     }
 
-    @Redirect(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTexture(Lnet/minecraft/util/Identifier;IIIIII)V", ordinal = 1))
-    private void inj1(DrawContext instance, Identifier texture, int x, int y, int u, int v, int width, int height) {
+    @ModifyArg(
+            method = "extractPlayerHealth(Lnet/minecraft/client/gui/GuiGraphicsExtractor;)V",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/gui/Hud;extractHearts(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/world/entity/player/Player;IIIIFIIIZ)V"),
+            index = 2)
+    private int modifyHealthBarX(int value) {
+        return ModConfig.INSTANCE.HpOrigin.resolveX(value, 81) + ModConfig.INSTANCE.HpXOffset;
+    }
 
-        if (ModConfig.INSTANCE.ArmorBar) {
-            instance.drawTexture(texture, x + ModConfig.INSTANCE.ArmorXOffset, y + ModConfig.INSTANCE.ArmorYOffset, u, v, width, height);
+    @ModifyArg(
+            method = "extractPlayerHealth(Lnet/minecraft/client/gui/GuiGraphicsExtractor;)V",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/gui/Hud;extractHearts(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/world/entity/player/Player;IIIIFIIIZ)V"),
+            index = 3)
+    private int modifyHealthBarY(int value) {
+        return ModConfig.INSTANCE.HpOrigin.resolveY(value, 9) + ModConfig.INSTANCE.HpYOffset;
+    }
+
+    @Inject(method = "extractArmor(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/world/entity/player/Player;IIII)V", at = @At("HEAD"), cancellable = true)
+    private static void renderArmor(GuiGraphicsExtractor graphics, Player player, int yLineBase, int numHealthRows, int healthRowHeight, int xLeft, CallbackInfo ci) {
+        if (!ModConfig.INSTANCE.ArmorBar) {
+            ci.cancel();
         }
     }
 
-    @Redirect(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTexture(Lnet/minecraft/util/Identifier;IIIIII)V", ordinal = 2))
-    private void inj2(DrawContext instance, Identifier texture, int x, int y, int u, int v, int width, int height) {
+    @ModifyArg(
+            method = "extractPlayerHealth(Lnet/minecraft/client/gui/GuiGraphicsExtractor;)V",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/gui/Hud;extractArmor(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/world/entity/player/Player;IIII)V"),
+            index = 2)
+    private static int modifyArmorBarY(int value) {
+        // extractArmor subtracts a further 10px (single-row case) from whatever we return here
+        // before drawing, so anchor against that true rendered position and add it back.
+        int targetTrueY = ModConfig.INSTANCE.ArmorOrigin.resolveY(value - 10, 9);
+        return targetTrueY + 10 + ModConfig.INSTANCE.ArmorYOffset;
+    }
 
-        if (ModConfig.INSTANCE.ArmorBar) {
-            instance.drawTexture(texture, x + ModConfig.INSTANCE.ArmorXOffset, y + ModConfig.INSTANCE.ArmorYOffset, u, v, width, height);
+    @ModifyArg(
+            method = "extractPlayerHealth(Lnet/minecraft/client/gui/GuiGraphicsExtractor;)V",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/gui/Hud;extractArmor(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/world/entity/player/Player;IIII)V"),
+            index = 5)
+    private static int modifyArmorBarX(int value) {
+        return ModConfig.INSTANCE.ArmorOrigin.resolveX(value, 81) + ModConfig.INSTANCE.ArmorXOffset;
+    }
+
+    @Inject(method = "extractFood(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/world/entity/player/Player;II)V", at = @At("HEAD"), cancellable = true)
+    public void renderFood(GuiGraphicsExtractor graphics, Player player, int yLineBase, int xRight, CallbackInfo ci) {
+        if (!ModConfig.INSTANCE.HungerBar) {
+            ci.cancel();
         }
     }
 
+    @ModifyArg(
+            method = "extractPlayerHealth(Lnet/minecraft/client/gui/GuiGraphicsExtractor;)V",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/gui/Hud;extractFood(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/world/entity/player/Player;II)V"),
+            index = 2)
+    private int modifyFoodBarY(int value) {
+        return ModConfig.INSTANCE.FoodOrigin.resolveY(value, 9) + ModConfig.INSTANCE.FoodYOffset;
+    }
 
-    @Redirect(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTexture(Lnet/minecraft/util/Identifier;IIIIII)V", ordinal = 3))
-    private void inj3(DrawContext instance, Identifier texture, int x, int y, int u, int v, int width, int height) {
+    @ModifyArg(
+            method = "extractPlayerHealth(Lnet/minecraft/client/gui/GuiGraphicsExtractor;)V",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/gui/Hud;extractFood(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/world/entity/player/Player;II)V"),
+            index = 3)
+    private int modifyFoodBarX(int value) {
+        // value is xRight (right-referenced); convert to the left edge to anchor, then back.
+        int targetLeftX = ModConfig.INSTANCE.FoodOrigin.resolveX(value - 81, 81);
+        return targetLeftX + 81 + ModConfig.INSTANCE.FoodXOffset;
+    }
 
-        if (ModConfig.INSTANCE.HungerBar) {
-            instance.drawTexture(texture, x + ModConfig.INSTANCE.FoodXOffset, y + ModConfig.INSTANCE.FoodYOffset, u, v, width, height);
+    @Inject(method = "extractAirBubbles(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/world/entity/player/Player;III)V", at = @At("HEAD"), cancellable = true)
+    public void renderAirBubbles(GuiGraphicsExtractor graphics, Player player, int vehicleHearts, int yLineAir, int xRight, CallbackInfo ci) {
+        if (!ModConfig.INSTANCE.AirBar) {
+            ci.cancel();
         }
     }
 
-    @Redirect(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTexture(Lnet/minecraft/util/Identifier;IIIIII)V", ordinal = 4))
-    private void inj4(DrawContext instance, Identifier texture, int x, int y, int u, int v, int width, int height) {
+    @ModifyArg(
+            method = "extractPlayerHealth(Lnet/minecraft/client/gui/GuiGraphicsExtractor;)V",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/gui/Hud;extractAirBubbles(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/world/entity/player/Player;III)V"),
+            index = 3)
+    private int modifyAirBubblesY(int value) {
+        // extractAirBubbles adds a further 10px (no-vehicle case) to whatever we return here
+        // before drawing, so anchor against that true rendered position and subtract it back.
+        int targetTrueY = ModConfig.INSTANCE.AirOrigin.resolveY(value + 10, 9);
+        return targetTrueY - 10 + ModConfig.INSTANCE.AirYOffset;
+    }
 
-        if (ModConfig.INSTANCE.HungerBar) {
-            instance.drawTexture(texture, x + ModConfig.INSTANCE.FoodXOffset, y + ModConfig.INSTANCE.FoodYOffset, u, v, width, height);
+    @ModifyArg(
+            method = "extractPlayerHealth(Lnet/minecraft/client/gui/GuiGraphicsExtractor;)V",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/gui/Hud;extractAirBubbles(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/world/entity/player/Player;III)V"),
+            index = 4)
+    private int modifyAirBubblesX(int value) {
+        // value is xRight (right-referenced); convert to the left edge to anchor, then back.
+        int targetLeftX = ModConfig.INSTANCE.AirOrigin.resolveX(value - 81, 81);
+        return targetLeftX + 81 + ModConfig.INSTANCE.AirXOffset;
+    }
+
+    // ---- Mount / vehicle health ----
+
+    @Inject(method = "extractVehicleHealth(Lnet/minecraft/client/gui/GuiGraphicsExtractor;)V", at = @At("HEAD"), cancellable = true)
+    public void renderMountHealth(GuiGraphicsExtractor graphics, CallbackInfo ci) {
+        if (!ModConfig.INSTANCE.MountHealth) {
+            ci.cancel();
         }
     }
 
-    @Redirect(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTexture(Lnet/minecraft/util/Identifier;IIIIII)V", ordinal = 5))
-    private void inj5(DrawContext instance, Identifier texture, int x, int y, int u, int v, int width, int height) {
+    // ---- Held item tooltip (name popup above hotbar) ----
 
-        if (ModConfig.INSTANCE.HungerBar) {
-            instance.drawTexture(texture, x + ModConfig.INSTANCE.FoodXOffset, y + ModConfig.INSTANCE.FoodYOffset, u, v, width, height);
+    @Inject(method = "extractSelectedItemName(Lnet/minecraft/client/gui/GuiGraphicsExtractor;)V", at = @At("HEAD"), cancellable = true)
+    public void renderHeldItemTooltip(GuiGraphicsExtractor graphics, CallbackInfo ci) {
+        if (!ModConfig.INSTANCE.HeldItemTooltip) {
+            ci.cancel();
+            return;
         }
+        int vanillaX = graphics.guiWidth() / 2 - 60;
+        int vanillaY = graphics.guiHeight() - 59;
+        int targetX = ModConfig.INSTANCE.HeldItemTooltipOrigin.resolveX(vanillaX, 120);
+        int targetY = ModConfig.INSTANCE.HeldItemTooltipOrigin.resolveY(vanillaY, 12);
+        graphics.pose().pushMatrix();
+        graphics.pose().translate((float) (targetX - vanillaX + ModConfig.INSTANCE.HeldItemTooltipXOffset), (float) (targetY - vanillaY + ModConfig.INSTANCE.HeldItemTooltipYOffset));
     }
 
-    @Redirect(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTexture(Lnet/minecraft/util/Identifier;IIIIII)V", ordinal = 6))
-    private void inj6(DrawContext instance, Identifier texture, int x, int y, int u, int v, int width, int height) {
-
-        if (ModConfig.INSTANCE.AirBar) {
-            instance.drawTexture(texture, x + ModConfig.INSTANCE.AirXOffset, y + ModConfig.INSTANCE.AirYOffset, u, v, width, height);
-        }
-    }
-    @Redirect(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTexture(Lnet/minecraft/util/Identifier;IIIIII)V", ordinal = 7))
-    private void inj7(DrawContext instance, Identifier texture, int x, int y, int u, int v, int width, int height) {
-
-        if (ModConfig.INSTANCE.AirBar) {
-            instance.drawTexture(texture, x + ModConfig.INSTANCE.AirXOffset, y + ModConfig.INSTANCE.AirYOffset, u, v, width, height);
-        }
-
-    }
-
-    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderMountHealth(Lnet/minecraft/client/gui/DrawContext;)V"))
-    public void renderMountHealthMix(InGameHud instance, DrawContext context) {
-
-        if (ModConfig.INSTANCE.MountHealth) {
-            renderMountHealth(context);
-        }
-
-    }
-
-    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderMountJumpBar(Lnet/minecraft/entity/JumpingMount;Lnet/minecraft/client/gui/DrawContext;I)V"))
-    public void renderMountJumpMix(InGameHud instance, JumpingMount mount, DrawContext context, int x) {
-        if (ModConfig.INSTANCE.MountJumpbar) {
-            renderMountJumpBar(mount, context, x);
-        }
-    }
-
-    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHeldItemTooltip(Lnet/minecraft/client/gui/DrawContext;)V"))
-    public void renderHeldItemTooltipMix(InGameHud instance, DrawContext context) {
+    @Inject(method = "extractSelectedItemName(Lnet/minecraft/client/gui/GuiGraphicsExtractor;)V", at = @At("RETURN"))
+    public void renderHeldItemTooltipEnd(GuiGraphicsExtractor graphics, CallbackInfo ci) {
         if (ModConfig.INSTANCE.HeldItemTooltip) {
-            renderHeldItemTooltip(context);
+            graphics.pose().popMatrix();
         }
     }
 
-    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/SpectatorHud;renderSpectatorMenu(Lnet/minecraft/client/gui/DrawContext;)V"))
-    public void renderSpectatorMenu(SpectatorHud instance, DrawContext context) {
-        if (ModConfig.INSTANCE.SpectatorMenu) {
-            instance.renderSpectatorMenu(context);
+    // ---- Status effects ----
+
+    @Inject(method = "extractEffects(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V", at = @At("HEAD"), cancellable = true)
+    public void renderStatusEffectOverlay(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker, CallbackInfo ci) {
+        if (!ModConfig.INSTANCE.StatusEffectOverlay) {
+            ci.cancel();
         }
     }
 
-    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/SpectatorHud;render(Lnet/minecraft/client/gui/DrawContext;)V"))
-    public void renderSpectatorHud(SpectatorHud instance, DrawContext context) {
-        if (ModConfig.INSTANCE.SpectatorHud) {
-            instance.render(context);
+    // ---- Scoreboard sidebar ----
+
+    @Inject(method = "extractScoreboardSidebar(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V", at = @At("HEAD"), cancellable = true)
+    public void renderScoreboardSidebar(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker, CallbackInfo ci) {
+        if (!ModConfig.INSTANCE.ScoreBoard) {
+            ci.cancel();
         }
     }
 
-    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/BossBarHud;render(Lnet/minecraft/client/gui/DrawContext;)V"))
-    public void renderBossBar(BossBarHud instance, DrawContext context) {
-        if (ModConfig.INSTANCE.BossBar) {
-            instance.render(context);
+    // ---- Tab / player list ----
+
+    @Inject(method = "extractTabList(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V", at = @At("HEAD"), cancellable = true)
+    public void renderPlayerList(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker, CallbackInfo ci) {
+        // Tab also cycles the HUD editor's selected element, so don't let it pop the vanilla player list too.
+        if (!ModConfig.INSTANCE.PlayerList || HudEditorState.active) {
+            ci.cancel();
         }
     }
 
-    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderStatusEffectOverlay(Lnet/minecraft/client/gui/DrawContext;)V"))
-    public void renderStatusEffectOverlay(InGameHud instance, DrawContext context) {
-        if (ModConfig.INSTANCE.StatusEffectOverlay) {
-            renderStatusEffectOverlay(context);
+    // ---- Chat ----
+
+    @Inject(method = "extractChat(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V", at = @At("HEAD"), cancellable = true)
+    public void renderChat(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker, CallbackInfo ci) {
+        if (!ModConfig.INSTANCE.ChatHud) {
+            ci.cancel();
         }
     }
 
-    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderScoreboardSidebar(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/scoreboard/ScoreboardObjective;)V"))
-    public void renderScoreBoard(InGameHud instance, DrawContext context, ScoreboardObjective objective) {
-        if (ModConfig.INSTANCE.ScoreBoard) {
-            renderScoreboardSidebar(context, objective);
+    // ---- Autosave indicator ----
+
+    @Inject(method = "extractSavingIndicator(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V", at = @At("HEAD"), cancellable = true)
+    public void renderAutosaveIndicator(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker, CallbackInfo ci) {
+        if (!ModConfig.INSTANCE.Autosave) {
+            ci.cancel();
         }
     }
 
-    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/DebugHud;render(Lnet/minecraft/client/gui/DrawContext;)V"))
-    public void renderDebugHud(DebugHud instance, DrawContext context) {
-        if (ModConfig.INSTANCE.DebugHud) {
-            instance.render(context);
+    // ---- Overlay message (e.g. "now playing", block placement hints) ----
+
+    @Inject(method = "extractOverlayMessage(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V", at = @At("HEAD"), cancellable = true)
+    public void renderOverlayMessage(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker, CallbackInfo ci) {
+        if (!ModConfig.INSTANCE.OverlayMessage) {
+            ci.cancel();
+            return;
+        }
+        int vanillaX = graphics.guiWidth() / 2 - 60;
+        int vanillaY = graphics.guiHeight() - 72;
+        int targetX = ModConfig.INSTANCE.OverlayMessageOrigin.resolveX(vanillaX, 120);
+        int targetY = ModConfig.INSTANCE.OverlayMessageOrigin.resolveY(vanillaY, 12);
+        graphics.pose().pushMatrix();
+        graphics.pose().translate((float) (targetX - vanillaX + ModConfig.INSTANCE.OverlayMessageXOffset), (float) (targetY - vanillaY + ModConfig.INSTANCE.OverlayMessageYOffset));
+    }
+
+    @Inject(method = "extractOverlayMessage(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V", at = @At("RETURN"))
+    public void renderOverlayMessageEnd(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker, CallbackInfo ci) {
+        if (ModConfig.INSTANCE.OverlayMessage) {
+            graphics.pose().popMatrix();
         }
     }
 
-    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/PlayerListHud;render(Lnet/minecraft/client/gui/DrawContext;ILnet/minecraft/scoreboard/Scoreboard;Lnet/minecraft/scoreboard/ScoreboardObjective;)V"))
-    public void renderPlayerList(PlayerListHud instance, DrawContext context, int scaledWindowWidth, Scoreboard scoreboard, ScoreboardObjective objective) {
-        if (ModConfig.INSTANCE.PlayerList) {
-            instance.render(context, scaledWindowWidth, scoreboard, objective);
-        }
-    }
+    // ---- Master toggle (F7) ----
 
-    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/ChatHud;render(Lnet/minecraft/client/gui/DrawContext;III)V"))
-    public void renderChatHud(ChatHud instance, DrawContext context, int currentTick, int mouseX, int mouseY) {
-        if (ModConfig.INSTANCE.ChatHud) {
-            instance.render(context, currentTick, mouseX, mouseY);
-        }
-    }
-
-    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderAutosaveIndicator(Lnet/minecraft/client/gui/DrawContext;)V"))
-    public void renderAutosave(InGameHud instance, DrawContext context) {
-        if (ModConfig.INSTANCE.Autosave) {
-            renderAutosaveIndicator(context);
-        }
-    }
-
-    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderExperienceBar(Lnet/minecraft/client/gui/DrawContext;I)V"))
-    public void renderAutosave(InGameHud instance, DrawContext context, int x) {
-        if (ModConfig.INSTANCE.ExpBar) {
-            renderExperienceBar(context, x);
-        }
-    }
-
-    @Inject(at=@At("HEAD"), method = "render", cancellable = true)
-    public void render(CallbackInfo info) {
+    @Inject(method = "extractRenderState(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V", at = @At("HEAD"), cancellable = true)
+    public void render(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker, CallbackInfo ci) {
         if (ModConfig.INSTANCE.removeHud) {
-            info.cancel();
+            ci.cancel();
         }
     }
-
 }

@@ -56,8 +56,24 @@ public class ModConfig implements ConfigData {
     @ConfigEntry.Category("HUD")
     public boolean HeldItemTooltip = true;
 
+    @ConfigEntry.Category("OFFSETS")
+    @Comment("Held item tooltip X offset")
+    public int HeldItemTooltipXOffset = 0;
+
+    @ConfigEntry.Category("OFFSETS")
+    @Comment("Held item tooltip Y offset")
+    public int HeldItemTooltipYOffset = 0;
+
+    @ConfigEntry.Category("OFFSETS")
+    @Comment("Held item tooltip anchor corner")
+    public OriginPoint HeldItemTooltipOrigin = OriginPoint.ORIGIN;
+
     @ConfigEntry.Category("HUD")
     public boolean MountJumpbar = true;
+
+    @ConfigEntry.Category("HUD")
+    @Comment("Waypoint locator bar")
+    public boolean LocatorBar = true;
 
     @ConfigEntry.Category("HUD")
     public boolean MountHealth = true;
@@ -68,10 +84,9 @@ public class ModConfig implements ConfigData {
     @ConfigEntry.Category("HUD")
     @Comment("Health hearts")
     public boolean HpBar = true;
-//
-//    @ConfigEntry.Category("OFFSETS")
-//    @Comment("HP bar origin point")
-//    public OriginPoint HpBarOrigin = OriginPoint.ORIGIN;
+    @ConfigEntry.Category("OFFSETS")
+    @Comment("HP bar anchor corner")
+    public OriginPoint HpOrigin = OriginPoint.ORIGIN;
 
     @ConfigEntry.Category("OFFSETS")
     @Comment("HP bar X offset")
@@ -80,10 +95,10 @@ public class ModConfig implements ConfigData {
     @ConfigEntry.Category("OFFSETS")
     @Comment("HP bar Y offset")
     public int HpYOffset = 0;
-//
-//    @ConfigEntry.Category("OFFSETS")
-//    @Comment("Armor bar origin point")
-//    public OriginPoint ArmorBarOrigin = OriginPoint.ORIGIN;
+
+    @ConfigEntry.Category("OFFSETS")
+    @Comment("Armor bar anchor corner")
+    public OriginPoint ArmorOrigin = OriginPoint.ORIGIN;
 
     @ConfigEntry.Category("HUD")
     @Comment("Armor points")
@@ -97,9 +112,9 @@ public class ModConfig implements ConfigData {
     @Comment("Armor bar Y offset")
     public int ArmorYOffset = 0;
 
-//    @ConfigEntry.Category("OFFSETS")
-//    @Comment("Oxygen bar origin point")
-//    public OriginPoint AirBarOrigin = OriginPoint.ORIGIN;
+    @ConfigEntry.Category("OFFSETS")
+    @Comment("Oxygen bar anchor corner")
+    public OriginPoint AirOrigin = OriginPoint.ORIGIN;
 
     @ConfigEntry.Category("HUD")
     @Comment("Oxygen bar")
@@ -113,13 +128,13 @@ public class ModConfig implements ConfigData {
     @Comment("Air bar Y offset")
     public int AirYOffset = 0;
 
-//    @ConfigEntry.Category("OFFSETS")
-//    @Comment("Hunger bar origin point")
-//    public OriginPoint FoodBarOrigin = OriginPoint.ORIGIN;
+    @ConfigEntry.Category("OFFSETS")
+    @Comment("Hunger bar anchor corner")
+    public OriginPoint FoodOrigin = OriginPoint.ORIGIN;
 
     @ConfigEntry.Category("HUD")
     @Comment("Hunger bar")
-    public boolean HungerBar;
+    public boolean HungerBar = true;
 
     @ConfigEntry.Category("OFFSETS")
     @Comment("Hunger bar X offset")
@@ -136,7 +151,7 @@ public class ModConfig implements ConfigData {
     public boolean PortalOverlay = true;
 
     @ConfigEntry.Category("Overlays")
-    @Comment("Frost Overlay, Pumkin head, etc...")
+    @Comment("Frost Overlay, Pumpkin head, etc...")
     public boolean OtherOverlays = true;
 
     @ConfigEntry.Category("Overlays")
@@ -145,10 +160,57 @@ public class ModConfig implements ConfigData {
     @ConfigEntry.Category("HUD")
     public boolean ExpBar = true;
 
+    @ConfigEntry.Category("OFFSETS")
+    @Comment("Exp bar X offset")
+    public int ExpBarXOffset = 0;
+
+    @ConfigEntry.Category("OFFSETS")
+    @Comment("Exp Tooltip Y offset")
+    public int ExpBarYOffset = 0;
+
+    @ConfigEntry.Category("OFFSETS")
+    @Comment("Exp bar anchor corner")
+    public OriginPoint ExpBarOrigin = OriginPoint.ORIGIN;
+
     @ConfigEntry.Category("HUD")
     public boolean Crosshairs = true;
 
     @ConfigEntry.Category("HUD")
     public boolean HotBar = true;
+
+    @ConfigEntry.Category("OFFSETS")
+    @Comment("Hotbar X offset")
+    public int HotBarXOffset = 0;
+
+    @ConfigEntry.Category("OFFSETS")
+    @Comment("Hotbar Y offset")
+    public int HotBarYOffset = 0;
+
+    @ConfigEntry.Category("OFFSETS")
+    @Comment("Hotbar anchor corner")
+    public OriginPoint HotBarOrigin = OriginPoint.ORIGIN;
+
+    @ConfigEntry.Category("HUD")
+    public boolean OverlayMessage = true;
+
+    @ConfigEntry.Category("OFFSETS")
+    @Comment("Overlay Message X offset")
+    public int OverlayMessageXOffset = 0;
+
+    @ConfigEntry.Category("OFFSETS")
+    @Comment("Overlay Message Y offset")
+    public int OverlayMessageYOffset = 0;
+
+    @ConfigEntry.Category("OFFSETS")
+    @Comment("Overlay message anchor corner")
+    public OriginPoint OverlayMessageOrigin = OriginPoint.ORIGIN;
+
+    @ConfigEntry.Category("Editor")
+    @Comment("Snap small offsets back to exactly 0 when nudging near the center")
+    public boolean OffsetSnapping = true;
+
+    @ConfigEntry.Category("Editor")
+    @Comment("How close to 0 (in pixels) triggers snapping")
+    public int OffsetSnappingStrength = 5;
 
 }
