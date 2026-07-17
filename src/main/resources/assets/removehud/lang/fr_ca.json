@@ -34,6 +34,7 @@
   "key.removehud.cycle": "Éditeur de HUD : élément suivant (Shift = ancrage suivant)",
   "key.removehud.toggle_snapping": "Éditeur de HUD : basculer l'alignement automatique",
   "key.removehud.reset_element": "Éditeur de HUD : réinitialiser l'élément",
+  "key.removehud.toggle_visibility": "Éditeur de HUD : afficher/masquer l'élément",
   "key.removehud.toggle_controls_hint": "Éditeur de HUD : afficher/masquer l'aide",
   "key.removehud.nudge_up": "Éditeur de HUD : déplacer vers le haut",
   "key.removehud.nudge_down": "Éditeur de HUD : déplacer vers le bas",

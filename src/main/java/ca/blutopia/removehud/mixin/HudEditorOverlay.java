@@ -27,7 +27,8 @@ public abstract class HudEditorOverlay {
             "Tab: next element   Shift+Tab: next anchor",
             "Arrows: move (Shift = big step)",
             "N: toggle snapping   R: reset element",
-            "H: hide this   F6: exit"
+            "V: hide/show element   H: hide this",
+            "F6: exit"
     };
 
     @Inject(method = "extractRenderState(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V", at = @At("TAIL"))
@@ -45,12 +46,16 @@ public abstract class HudEditorOverlay {
         int w = bounds[2];
         int h = bounds[3];
 
-        graphics.outline(x - 2, y - 2, w + 4, h + 4, 0xFFFFFF00);
+        boolean visible = selected.isVisible();
+        int accentColor = visible ? 0xFFFFFF00 : 0xFFFF5555;
 
-        String label = selected.label + "  (" + selected.getX() + ", " + selected.getY() + ")  " + selected.getOrigin();
+        graphics.outline(x - 2, y - 2, w + 4, h + 4, accentColor);
+
+        String label = selected.label + "  (" + selected.getX() + ", " + selected.getY() + ")  " + selected.getOrigin()
+                + (visible ? "" : "  [HIDDEN]");
         // Draw above the box normally, but flip below it if there isn't room (element anchored near the top).
         int labelY = y - 12 >= 0 ? y - 12 : y + h + 4;
-        graphics.text(font, label, x - 2, labelY, 0xFFFFFF00);
+        graphics.text(font, label, x - 2, labelY, accentColor);
 
         if (HudEditorState.showControls) {
             removehud$renderControlsHint(graphics, font);

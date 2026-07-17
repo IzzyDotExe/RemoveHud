@@ -27,6 +27,7 @@ public class RemoveHud implements ClientModInitializer {
 	private KeyMapping cycleKey;
 	private KeyMapping toggleSnappingKey;
 	private KeyMapping resetElementKey;
+	private KeyMapping toggleVisibilityKey;
 	private KeyMapping toggleControlsHintKey;
 	private KeyMapping nudgeUpKey;
 	private KeyMapping nudgeDownKey;
@@ -47,6 +48,7 @@ public class RemoveHud implements ClientModInitializer {
 		cycleKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.removehud.cycle", GLFW.GLFW_KEY_TAB, CATEGORY));
 		toggleSnappingKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.removehud.toggle_snapping", GLFW.GLFW_KEY_N, CATEGORY));
 		resetElementKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.removehud.reset_element", GLFW.GLFW_KEY_R, CATEGORY));
+		toggleVisibilityKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.removehud.toggle_visibility", GLFW.GLFW_KEY_V, CATEGORY));
 		toggleControlsHintKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.removehud.toggle_controls_hint", GLFW.GLFW_KEY_H, CATEGORY));
 		nudgeUpKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.removehud.nudge_up", GLFW.GLFW_KEY_UP, CATEGORY));
 		nudgeDownKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.removehud.nudge_down", GLFW.GLFW_KEY_DOWN, CATEGORY));
@@ -100,6 +102,11 @@ public class RemoveHud implements ClientModInitializer {
 		while (resetElementKey.consumeClick()) {
 			HudEditorState.selected.reset();
 			HudEditorState.showHint(HudEditorState.selected.label + " reset");
+		}
+
+		while (toggleVisibilityKey.consumeClick()) {
+			HudEditorState.selected.toggleVisibility();
+			HudEditorState.showHint(HudEditorState.selected.label + (HudEditorState.selected.isVisible() ? " shown" : " hidden"));
 		}
 
 		while (toggleControlsHintKey.consumeClick()) {

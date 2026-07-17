@@ -3,6 +3,7 @@ package ca.blutopia.removehud.config;
 import ca.blutopia.removehud.ModConfig;
 import net.minecraft.client.Minecraft;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
@@ -19,6 +20,7 @@ import java.util.function.Supplier;
 public enum HudElement {
 
     HOTBAR("Hotbar",
+            () -> ModConfig.INSTANCE.HotBar, v -> ModConfig.INSTANCE.HotBar = v,
             () -> ModConfig.INSTANCE.HotBarXOffset, v -> ModConfig.INSTANCE.HotBarXOffset = v,
             () -> ModConfig.INSTANCE.HotBarYOffset, v -> ModConfig.INSTANCE.HotBarYOffset = v,
             () -> ModConfig.INSTANCE.HotBarOrigin, v -> ModConfig.INSTANCE.HotBarOrigin = v,
@@ -26,6 +28,7 @@ public enum HudElement {
             182, 22),
 
     HP("HP Bar",
+            () -> ModConfig.INSTANCE.HpBar, v -> ModConfig.INSTANCE.HpBar = v,
             () -> ModConfig.INSTANCE.HpXOffset, v -> ModConfig.INSTANCE.HpXOffset = v,
             () -> ModConfig.INSTANCE.HpYOffset, v -> ModConfig.INSTANCE.HpYOffset = v,
             () -> ModConfig.INSTANCE.HpOrigin, v -> ModConfig.INSTANCE.HpOrigin = v,
@@ -33,6 +36,7 @@ public enum HudElement {
             81, 9),
 
     ARMOR("Armor Bar",
+            () -> ModConfig.INSTANCE.ArmorBar, v -> ModConfig.INSTANCE.ArmorBar = v,
             () -> ModConfig.INSTANCE.ArmorXOffset, v -> ModConfig.INSTANCE.ArmorXOffset = v,
             () -> ModConfig.INSTANCE.ArmorYOffset, v -> ModConfig.INSTANCE.ArmorYOffset = v,
             () -> ModConfig.INSTANCE.ArmorOrigin, v -> ModConfig.INSTANCE.ArmorOrigin = v,
@@ -40,6 +44,7 @@ public enum HudElement {
             81, 9),
 
     FOOD("Food Bar",
+            () -> ModConfig.INSTANCE.HungerBar, v -> ModConfig.INSTANCE.HungerBar = v,
             () -> ModConfig.INSTANCE.FoodXOffset, v -> ModConfig.INSTANCE.FoodXOffset = v,
             () -> ModConfig.INSTANCE.FoodYOffset, v -> ModConfig.INSTANCE.FoodYOffset = v,
             () -> ModConfig.INSTANCE.FoodOrigin, v -> ModConfig.INSTANCE.FoodOrigin = v,
@@ -47,6 +52,7 @@ public enum HudElement {
             81, 9),
 
     AIR("Air Bar",
+            () -> ModConfig.INSTANCE.AirBar, v -> ModConfig.INSTANCE.AirBar = v,
             () -> ModConfig.INSTANCE.AirXOffset, v -> ModConfig.INSTANCE.AirXOffset = v,
             () -> ModConfig.INSTANCE.AirYOffset, v -> ModConfig.INSTANCE.AirYOffset = v,
             () -> ModConfig.INSTANCE.AirOrigin, v -> ModConfig.INSTANCE.AirOrigin = v,
@@ -54,6 +60,7 @@ public enum HudElement {
             81, 9),
 
     EXP_BAR("Exp Bar",
+            () -> ModConfig.INSTANCE.ExpBar, v -> ModConfig.INSTANCE.ExpBar = v,
             () -> ModConfig.INSTANCE.ExpBarXOffset, v -> ModConfig.INSTANCE.ExpBarXOffset = v,
             () -> ModConfig.INSTANCE.ExpBarYOffset, v -> ModConfig.INSTANCE.ExpBarYOffset = v,
             () -> ModConfig.INSTANCE.ExpBarOrigin, v -> ModConfig.INSTANCE.ExpBarOrigin = v,
@@ -61,6 +68,7 @@ public enum HudElement {
             182, 5),
 
     HELD_ITEM_TOOLTIP("Held Item Tooltip",
+            () -> ModConfig.INSTANCE.HeldItemTooltip, v -> ModConfig.INSTANCE.HeldItemTooltip = v,
             () -> ModConfig.INSTANCE.HeldItemTooltipXOffset, v -> ModConfig.INSTANCE.HeldItemTooltipXOffset = v,
             () -> ModConfig.INSTANCE.HeldItemTooltipYOffset, v -> ModConfig.INSTANCE.HeldItemTooltipYOffset = v,
             () -> ModConfig.INSTANCE.HeldItemTooltipOrigin, v -> ModConfig.INSTANCE.HeldItemTooltipOrigin = v,
@@ -68,6 +76,7 @@ public enum HudElement {
             120, 12),
 
     OVERLAY_MESSAGE("Overlay Message",
+            () -> ModConfig.INSTANCE.OverlayMessage, v -> ModConfig.INSTANCE.OverlayMessage = v,
             () -> ModConfig.INSTANCE.OverlayMessageXOffset, v -> ModConfig.INSTANCE.OverlayMessageXOffset = v,
             () -> ModConfig.INSTANCE.OverlayMessageYOffset, v -> ModConfig.INSTANCE.OverlayMessageYOffset = v,
             () -> ModConfig.INSTANCE.OverlayMessageOrigin, v -> ModConfig.INSTANCE.OverlayMessageOrigin = v,
@@ -75,6 +84,8 @@ public enum HudElement {
             120, 12);
 
     public final String label;
+    private final BooleanSupplier visibleGet;
+    private final Consumer<Boolean> visibleSet;
     private final IntSupplier xGet;
     private final IntConsumer xSet;
     private final IntSupplier yGet;
@@ -87,12 +98,15 @@ public enum HudElement {
     public final int height;
 
     HudElement(String label,
+               BooleanSupplier visibleGet, Consumer<Boolean> visibleSet,
                IntSupplier xGet, IntConsumer xSet,
                IntSupplier yGet, IntConsumer ySet,
                Supplier<OriginPoint> originGet, Consumer<OriginPoint> originSet,
                IntSupplier vanillaX, IntSupplier vanillaY,
                int width, int height) {
         this.label = label;
+        this.visibleGet = visibleGet;
+        this.visibleSet = visibleSet;
         this.xGet = xGet;
         this.xSet = xSet;
         this.yGet = yGet;
@@ -118,6 +132,19 @@ public enum HudElement {
             return 0;
         }
         return value;
+    }
+
+    public boolean isVisible() {
+        return visibleGet.getAsBoolean();
+    }
+
+    /**
+     * Toggles whether this element renders at all - the same boolean flag
+     * the mod's own toggle config uses. Somewhat the whole point of a mod
+     * called RemoveHud, so the editor really ought to have this.
+     */
+    public void toggleVisibility() {
+        visibleSet.accept(!isVisible());
     }
 
     public int getX() {
