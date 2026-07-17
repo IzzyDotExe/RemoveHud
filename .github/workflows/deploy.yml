@@ -1,0 +1,113 @@
+# Publishes builds to GitHub Releases and Modrinth.
+#
+# - Manual run (Actions tab -> Run workflow) on any branch other than
+#   `unstable` publishes an ALPHA build of that branch.
+# - Manual run on `unstable` publishes a BETA build.
+# - Every push to `main` automatically publishes a RELEASE build, but only if
+#   gradle.properties' mod_version has actually changed since the last
+#   release tag (so merges that don't bump the version don't spam a release).
+
+name: deploy
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0 # need full tag history for the release-version-change check below
+
+      - name: resolve deploy channel and version
+        id: vars
+        run: |
+          mod_version=$(grep -E '^[[:space:]]*mod_version[[:space:]]*=' gradle.properties | sed -E 's/^[[:space:]]*mod_version[[:space:]]*=[[:space:]]*//' | tr -d '[:space:]')
+          mc_version=$(grep -E '^[[:space:]]*minecraft_version[[:space:]]*=' gradle.properties | sed -E 's/^[[:space:]]*minecraft_version[[:space:]]*=[[:space:]]*//' | tr -d '[:space:]')
+          run_number="${{ github.run_number }}"
+          branch="${{ github.ref_name }}"
+
+          if [ "${{ github.event_name }}" = "push" ]; then
+            channel=release
+          elif [ "$branch" = "unstable" ]; then
+            channel=beta
+          else
+            channel=alpha
+          fi
+          echo "channel=$channel" >> "$GITHUB_OUTPUT"
+          echo "mc_version=$mc_version" >> "$GITHUB_OUTPUT"
+
+          if [ "$channel" = "release" ]; then
+            latest_tag=$(git tag -l 'v*' | grep -vE -- '-BETA-|-ALPHA-' | sort -V | tail -1 | sed 's/^v//')
+            if [ "$latest_tag" = "$mod_version" ]; then
+              echo "skip=true" >> "$GITHUB_OUTPUT"
+              echo "mod_version ($mod_version) unchanged since latest release tag (v$latest_tag) - skipping release."
+              exit 0
+            fi
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+            echo "tag=v${mod_version}" >> "$GITHUB_OUTPUT"
+            echo "release_name=RemoveHUD v${mod_version} RELEASE" >> "$GITHUB_OUTPUT"
+            echo "version_number=v${mod_version}+${mc_version}" >> "$GITHUB_OUTPUT"
+            echo "prerelease=false" >> "$GITHUB_OUTPUT"
+          elif [ "$channel" = "beta" ]; then
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+            echo "tag=v${mod_version}-BETA-${run_number}" >> "$GITHUB_OUTPUT"
+            echo "release_name=RemoveHUD ${mod_version} BETA ${run_number}" >> "$GITHUB_OUTPUT"
+            echo "version_number=v${mod_version}-beta.${run_number}+${mc_version}" >> "$GITHUB_OUTPUT"
+            echo "prerelease=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+            echo "tag=v${mod_version}-ALPHA-${run_number}" >> "$GITHUB_OUTPUT"
+            echo "release_name=RemoveHUD ${mod_version} ALPHA ${run_number} (${branch})" >> "$GITHUB_OUTPUT"
+            echo "version_number=v${mod_version}-alpha.${run_number}+${mc_version}" >> "$GITHUB_OUTPUT"
+            echo "prerelease=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: validate gradle wrapper
+        if: steps.vars.outputs.skip != 'true'
+        uses: gradle/actions/wrapper-validation@v4
+
+      - name: setup jdk 25
+        if: steps.vars.outputs.skip != 'true'
+        uses: actions/setup-java@v4
+        with:
+          java-version: 25
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      # The Modmenu/Cloth Config mavens occasionally drop the connection
+      # mid-download (HTTP/2 stream reset / "premature end of chunk"). Retry
+      # the build a few times so a single flaky download doesn't fail the job.
+      - name: build
+        if: steps.vars.outputs.skip != 'true'
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 20
+          max_attempts: 3
+          retry_wait_seconds: 30
+          command: ./gradlew build
+
+      - name: publish to github releases and modrinth
+        if: steps.vars.outputs.skip != 'true'
+        uses: Kira-NT/mc-publish@v3
+        with:
+          name: ${{ steps.vars.outputs.release_name }}
+          version: ${{ steps.vars.outputs.version_number }}
+          version-type: ${{ steps.vars.outputs.channel }}
+          game-versions: ${{ steps.vars.outputs.mc_version }}
+          loaders: fabric
+
+          modrinth-id: MiPOIx6b
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+
+          github-tag: ${{ steps.vars.outputs.tag }}
+          github-commitish: ${{ github.sha }}
+          github-generate-changelog: true
+          github-prerelease: ${{ steps.vars.outputs.prerelease }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
