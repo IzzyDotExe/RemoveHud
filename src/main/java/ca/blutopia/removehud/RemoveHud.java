@@ -11,7 +11,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.resources.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.lwjgl.glfw.GLFW;
 
 public class RemoveHud implements ClientModInitializer {
 	// This logger is used to write text to the console and the log file.
@@ -41,17 +40,17 @@ public class RemoveHud implements ClientModInitializer {
 
 		ModConfig.init();
 
-		keynmap = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.removehud.toggle_mod", GLFW.GLFW_KEY_F7, CATEGORY));
-		keynmap2 = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.removehud.open_settings", GLFW.GLFW_KEY_F8, CATEGORY));
-		toggleEditorKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.removehud.toggle_editor", GLFW.GLFW_KEY_F6, CATEGORY));
-		cycleKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.removehud.cycle", GLFW.GLFW_KEY_TAB, CATEGORY));
-		toggleSnappingKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.removehud.toggle_snapping", GLFW.GLFW_KEY_N, CATEGORY));
-		resetElementKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.removehud.reset_element", GLFW.GLFW_KEY_R, CATEGORY));
-		toggleControlsHintKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.removehud.toggle_controls_hint", GLFW.GLFW_KEY_H, CATEGORY));
-		nudgeUpKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.removehud.nudge_up", GLFW.GLFW_KEY_UP, CATEGORY));
-		nudgeDownKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.removehud.nudge_down", GLFW.GLFW_KEY_DOWN, CATEGORY));
-		nudgeLeftKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.removehud.nudge_left", GLFW.GLFW_KEY_LEFT, CATEGORY));
-		nudgeRightKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.removehud.nudge_right", GLFW.GLFW_KEY_RIGHT, CATEGORY));
+		keynmap = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.removehud.toggle_mod", InputConstants.KEY_F7, CATEGORY));
+		keynmap2 = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.removehud.open_settings", InputConstants.KEY_F8, CATEGORY));
+		toggleEditorKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.removehud.toggle_editor", InputConstants.KEY_F6, CATEGORY));
+		cycleKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.removehud.cycle", InputConstants.KEY_TAB, CATEGORY));
+		toggleSnappingKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.removehud.toggle_snapping", InputConstants.KEY_N, CATEGORY));
+		resetElementKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.removehud.reset_element", InputConstants.KEY_R, CATEGORY));
+		toggleControlsHintKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.removehud.toggle_controls_hint", InputConstants.KEY_H, CATEGORY));
+		nudgeUpKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.removehud.nudge_up", InputConstants.KEY_UP, CATEGORY));
+		nudgeDownKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.removehud.nudge_down", InputConstants.KEY_DOWN, CATEGORY));
+		nudgeLeftKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.removehud.nudge_left", InputConstants.KEY_LEFT, CATEGORY));
+		nudgeRightKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.removehud.nudge_right", InputConstants.KEY_RIGHT, CATEGORY));
 
 		ClientTickEvents.END_CLIENT_TICK.register(this::removeHudToggleListener);
 
@@ -81,8 +80,8 @@ public class RemoveHud implements ClientModInitializer {
 			return;
 		}
 
-		boolean shiftHeld = InputConstants.isKeyDown(client.getWindow(), InputConstants.KEY_LSHIFT)
-				|| InputConstants.isKeyDown(client.getWindow(), InputConstants.KEY_RSHIFT);
+		boolean shiftHeld = InputConstants.isKeyDown(InputConstants.KEY_LSHIFT)
+				|| InputConstants.isKeyDown(InputConstants.KEY_RSHIFT);
 
 		while (cycleKey.consumeClick()) {
 			if (shiftHeld) {
