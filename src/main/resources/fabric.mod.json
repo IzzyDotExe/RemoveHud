@@ -27,7 +27,8 @@
     ]
   },
   "mixins": [
-    "removehud.mixins.json"
+    "removehud.mixins.json",
+    "removehud-compat.mixins.json"
   ],
 
   "depends": {

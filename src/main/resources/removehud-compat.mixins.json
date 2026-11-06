@@ -1,0 +1,17 @@
+{
+  "required": false,
+  "minVersion": "0.8",
+  "package": "ca.blutopia.removehud.mixin.compat",
+  "compatibilityLevel": "JAVA_25",
+  "mixins": [
+
+  ],
+  "client": [
+    "LitematicaHudCompat",
+    "XaeroMinimapHudCompat",
+    "XaeroWaypointMarkerCompat"
+  ],
+  "injectors": {
+    "defaultRequire": 0
+  }
+}

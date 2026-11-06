@@ -16,5 +16,6 @@ Need help? or have questions? [Join my discord!](https://discord.gg/cVFc6Mr)
 - Removes Hand without removing the HUD (Availible in Options menu F8)
 - Removes the block outline (Availible in Options menu F8)
 - Individually toggle certain elements of the HUD (Via options menu F8)
+- Mod compat: F7 also hides Litematica's HUD elements and Xaero's Minimap (minimap, radar & world waypoint markers)
 
 <a href='https://ko-fi.com/Y8Y5BAYRU' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://cdn.ko-fi.com/cdn/kofi2.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
